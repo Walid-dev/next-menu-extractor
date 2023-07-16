@@ -1,0 +1,23 @@
+.
+├── README.md
+├── folder_structure.txt
+├── next-env.d.ts
+├── next.config.js
+├── package.json
+├── public
+│   ├── next.svg
+│   └── vercel.svg
+├── src
+│   ├── app
+│   │   ├── favicon.ico
+│   │   ├── globals.css
+│   │   ├── layout.tsx
+│   │   └── page.module.css
+│   ├── components
+│   └── pages
+│       ├── _app.tsx
+│       └── index.tsx
+├── tsconfig.json
+└── yarn.lock
+
+6 directories, 15 files
