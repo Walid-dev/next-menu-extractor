@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from "react";
+// @ts-nocheck
+
+import React, { useEffect, useState, useRef } from "react";
 import _ from "lodash";
 
 export default function Home() {
@@ -10,6 +12,9 @@ export default function Home() {
   const [prefixToDelete, setPrefixToDelete] = useState("");
   const [extractedData, setExtractedData] = useState(null);
   const [copied, setCopied] = useState(false);
+
+  // Create a ref for our script
+  const scriptRef = useRef(null);
 
   const fetchUrl = "https://www.mobi2go.com/api/1/headoffice/XXXX/menu?export"; // replace with your API URL
 
@@ -120,6 +125,68 @@ export default function Home() {
     element.click();
   };
 
+  const generateExcel = (data) => {
+    let products = [];
+    let modifiers = [];
+
+    // extract product prices and tier prices
+    for (const product of data.products) {
+      let productData = {
+        Name: product.backend_name,
+        Price: product.price,
+      };
+      // add tier prices to product data
+      for (let i = 0; i < product.property_tiers.length; i++) {
+        productData[`Tier ${i + 1} Price`] = product.property_tiers[i].price;
+      }
+      products.push(productData);
+    }
+
+    // extract modifier prices and tier prices
+    for (const modifier of data.modifiers) {
+      let modifierData = {
+        Name: modifier.backend_name,
+        Price: modifier.price,
+      };
+      // add tier prices to modifier data
+      for (let i = 0; i < modifier.property_tiers.length; i++) {
+        modifierData[`Tier ${i + 1} Price`] = modifier.property_tiers[i].price;
+      }
+      modifiers.push(modifierData);
+    }
+
+    // create workbook
+    const wb = window.XLSX.utils.book_new();
+
+    // add products sheet
+    const productsSheet = window.XLSX.utils.json_to_sheet(products);
+    window.XLSX.utils.book_append_sheet(wb, productsSheet, "Products");
+
+    // add modifiers sheet
+    const modifiersSheet = window.XLSX.utils.json_to_sheet(modifiers);
+    window.XLSX.utils.book_append_sheet(wb, modifiersSheet, "Modifiers");
+
+    // generate and download the file
+    window.XLSX.writeFile(wb, "output.xlsx");
+  };
+
+  // Add the SheetJS library to our page
+  useEffect(() => {
+    scriptRef.current = document.createElement("script");
+    scriptRef.current.src = "https://unpkg.com/xlsx/dist/xlsx.full.min.js";
+    scriptRef.current.async = true;
+    document.body.appendChild(scriptRef.current);
+
+    // Remove the script on component unmount
+    return () => {
+      document.body.removeChild(scriptRef.current);
+    };
+  }, []);
+
+  const handleDownloadExcelPricesFile = () => {
+    generateExcel(extractedData);
+  };
+
   return (
     <div>
       <h4>Menu Copy Tool</h4>
@@ -158,9 +225,10 @@ export default function Home() {
       {extractedData && (
         <div>
           <h5>Modified Menu:</h5>
-          <pre>{JSON.stringify(extractedData, null, 2)}</pre>
           <button onClick={handleCopy}>{copied ? "Copied!" : "Copy Menu"}</button>
           <button onClick={handleDownload}>Download Menu</button>
+          <button onClick={handleDownloadExcelPricesFile}>Download Excel</button>
+          <pre>{JSON.stringify(extractedData, null, 2)}</pre>
         </div>
       )}
     </div>
