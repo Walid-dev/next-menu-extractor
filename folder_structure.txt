@@ -14,10 +14,14 @@
 │   │   ├── layout.tsx
 │   │   └── page.module.css
 │   ├── components
-│   └── pages
-│       ├── _app.tsx
-│       └── index.tsx
+│   ├── pages
+│   │   ├── _app.tsx
+│   │   └── index.tsx
+│   └── style
+│       └── main.css
 ├── tsconfig.json
+├── types
+│   └── types.ts
 └── yarn.lock
 
-6 directories, 15 files
+8 directories, 17 files
