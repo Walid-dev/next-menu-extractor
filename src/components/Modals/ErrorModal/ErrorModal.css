@@ -7,9 +7,6 @@
     display: block;
 }
 
-.json-data-container {
-    display: flex;
-}
 .error-modal {
     position: fixed;
     top: 0;

@@ -2,8 +2,10 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import _ from "lodash";
+import * as XLSX from "xlsx";
 import "../style/main.css";
 import fetchData from "@/api/fetchData";
+import ErrorModal from "@/components/Modals/ErrorModal/ErrorModal";
 
 export default function Home() {
   const [headofficeId, setHeadofficeId] = useState("");
@@ -21,9 +23,6 @@ export default function Home() {
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  // Create a ref for our script
-  const scriptRef = useRef(null);
-
   // const fetchUrl = "https://www.mobi2go.com/api/1/headoffice/XXXX/menu?export";
 
   const handleMenuClick = (menu) => {
@@ -39,8 +38,8 @@ export default function Home() {
         setMenuList(content.menus);
       })
       .catch((error) => {
-        console.error(error);
         setIsErrorModalOpen(true);
+        setErrorMessage("Fetching menus: " + error.message);
       })
       .finally(() => {
         setFetching(false);
@@ -104,7 +103,7 @@ export default function Home() {
       .catch((error) => {
         console.error(error);
         setIsErrorModalOpen(true);
-        setErrorMessage("Failed to fetch menus: " + error.message);
+        setErrorMessage("Failed to extract menu: " + error.message);
       })
       .finally(() => {
         setSubmitting(false);
@@ -164,36 +163,23 @@ export default function Home() {
       }
 
       // create workbook
-      const wb = window.XLSX.utils.book_new();
+      const wb = XLSX.utils.book_new();
 
       // add products sheet
-      const productsSheet = window.XLSX.utils.json_to_sheet(products);
-      window.XLSX.utils.book_append_sheet(wb, productsSheet, "Products");
+      const productsSheet = XLSX.utils.json_to_sheet(products);
+      XLSX.utils.book_append_sheet(wb, productsSheet, "Products");
 
       // add modifiers sheet
-      const modifiersSheet = window.XLSX.utils.json_to_sheet(modifiers);
-      window.XLSX.utils.book_append_sheet(wb, modifiersSheet, "Modifiers");
+      const modifiersSheet = XLSX.utils.json_to_sheet(modifiers);
+      XLSX.utils.book_append_sheet(wb, modifiersSheet, "Modifiers");
 
       // generate and download the file
-      window.XLSX.writeFile(wb, `${selectedMenuName}.xlsx`);
+      XLSX.writeFile(wb, `${selectedMenuName}.xlsx`);
     } catch (error) {
       setErrorMessage("Failed to generate Excel: " + error.message);
       setIsErrorModalOpen(true);
     }
   };
-
-  // Add the SheetJS library to our page
-  useEffect(() => {
-    scriptRef.current = document.createElement("script");
-    scriptRef.current.src = "https://unpkg.com/xlsx/dist/xlsx.full.min.js";
-    scriptRef.current.async = true;
-    document.body.appendChild(scriptRef.current);
-
-    // Remove the script on component unmount
-    return () => {
-      document.body.removeChild(scriptRef.current);
-    };
-  }, []);
 
   const handleDownloadExcelPricesFile = (data) => {
     generateExcel(data);
@@ -234,13 +220,13 @@ export default function Home() {
     const reader = new FileReader();
     reader.onload = (e) => {
       const data = new Uint8Array(e.target.result);
-      const workbook = window.XLSX.read(data, { type: "array" });
+      const workbook = XLSX.read(data, { type: "array" });
 
       const productsSheet = workbook.Sheets[workbook.SheetNames[0]];
       const modifiersSheet = workbook.Sheets[workbook.SheetNames[1]];
 
-      const productsData = window.XLSX.utils.sheet_to_json(productsSheet);
-      const modifiersData = window.XLSX.utils.sheet_to_json(modifiersSheet);
+      const productsData = XLSX.utils.sheet_to_json(productsSheet);
+      const modifiersData = XLSX.utils.sheet_to_json(modifiersSheet);
 
       const updatedData = updatePricesFromExcel({ Products: productsData, Modifiers: modifiersData }, _.cloneDeep(extractedData));
       // setExtractedData(_.cloneDeep(updatedData));
@@ -305,17 +291,14 @@ export default function Home() {
           </div>
         )}
       </div>
-      <div className={`error-modal ${isErrorModalOpen ? "is-open" : ""}`}>
-        <h2>Error</h2>
-        <p>{errorMessage}</p>
-        <button
-          onClick={() => {
-            setIsErrorModalOpen(false);
-            setErrorMessage("");
-          }}>
-          Close
-        </button>
-      </div>
+      <ErrorModal
+        isOpen={isErrorModalOpen}
+        message={errorMessage}
+        handleClose={() => {
+          setIsErrorModalOpen(false);
+          setErrorMessage("");
+        }}
+      />
     </div>
   );
 }

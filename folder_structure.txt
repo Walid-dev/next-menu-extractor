@@ -8,6 +8,8 @@
 │   ├── next.svg
 │   └── vercel.svg
 ├── src
+│   ├── api
+│   │   └── fetchData.ts
 │   ├── app
 │   │   ├── favicon.ico
 │   │   ├── globals.css
@@ -17,11 +19,13 @@
 │   ├── pages
 │   │   ├── _app.tsx
 │   │   └── index.tsx
-│   └── style
-│       └── main.css
+│   ├── style
+│   │   └── main.css
+│   └── utils
+│       └── extractMenu.ts
 ├── tsconfig.json
 ├── types
 │   └── types.ts
 └── yarn.lock
 
-8 directories, 17 files
+10 directories, 19 files
