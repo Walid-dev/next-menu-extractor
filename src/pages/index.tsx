@@ -2,21 +2,28 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import _ from "lodash";
+import "../style/main.css";
 
 export default function Home() {
   const [headofficeId, setHeadofficeId] = useState("");
   const [menuList, setMenuList] = useState([]);
   const [selectedMenu, setSelectedMenu] = useState(null);
+  const [selectedMenuName, setSelectedMenuName] = useState("");
   const [fetching, setFetching] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [prefix, setPrefix] = useState("");
   const [prefixToDelete, setPrefixToDelete] = useState("");
   const [extractedData, setExtractedData] = useState(null);
+  const [updatedData, setUpdatedData] = useState(null);
   const [copied, setCopied] = useState(false);
+
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   // Create a ref for our script
   const scriptRef = useRef(null);
 
-  const fetchUrl = "https://www.mobi2go.com/api/1/headoffice/XXXX/menu?export"; // replace with your API URL
+  const fetchUrl = "https://www.mobi2go.com/api/1/headoffice/XXXX/menu?export";
 
   const handleMenuClick = (menu) => {
     setSelectedMenu(menu);
@@ -24,6 +31,8 @@ export default function Home() {
 
   const fetchMenus = () => {
     setFetching(true);
+    setExtractedData(null);
+    setUpdatedData(null);
     fetch(fetchUrl.replace("XXXX", headofficeId))
       .then((res) => {
         if (!res.ok) throw new Error(`API Request failed with status ${res.status}`);
@@ -34,6 +43,7 @@ export default function Home() {
       })
       .catch((error) => {
         console.error(error);
+        setIsErrorModalOpen(true);
       })
       .finally(() => {
         setFetching(false);
@@ -41,7 +51,7 @@ export default function Home() {
   };
 
   const handleSubmit = () => {
-    setFetching(true);
+    setSubmitting(true);
     fetch(fetchUrl.replace("XXXX", headofficeId))
       .then((res) => {
         if (!res.ok) throw new Error(`API Request failed with status ${res.status}`);
@@ -49,7 +59,7 @@ export default function Home() {
       })
       .then((content) => {
         const menus_to_copy = [selectedMenu.backend_name];
-
+        setSelectedMenuName(menus_to_copy);
         const menus_to_keep = content.menus.filter((menu) => menus_to_copy.includes(menu.backend_name));
         const category_names_to_keep = _.union(...menus_to_keep.map((menu) => menu.categories));
         const categories_to_keep = content.categories.filter((category) =>
@@ -97,17 +107,20 @@ export default function Home() {
         };
 
         setExtractedData(output);
+        setSelectedMenuName(output.menus[0].backend_name);
       })
       .catch((error) => {
         console.error(error);
+        setIsErrorModalOpen(true);
+        setErrorMessage("Failed to fetch menus: " + error.message);
       })
       .finally(() => {
-        setFetching(false);
+        setSubmitting(false);
       });
   };
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(JSON.stringify(extractedData, null, 2));
+  const handleCopy = (data) => {
+    navigator.clipboard.writeText(JSON.stringify(data, null, 2));
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -116,9 +129,9 @@ export default function Home() {
     if (selectedMenu) fetchMenus();
   }, [selectedMenu]);
 
-  const handleDownload = () => {
+  const handleDownload = (data) => {
     const element = document.createElement("a");
-    const file = new Blob([JSON.stringify(extractedData, null, 2)], { type: "text/plain" });
+    const file = new Blob([JSON.stringify(data, null, 2)], { type: "text/plain" });
     element.href = URL.createObjectURL(file);
     element.download = `${prefix}${selectedMenu.backend_name}.json`;
     document.body.appendChild(element); // Required for this to work in FireFox
@@ -126,48 +139,55 @@ export default function Home() {
   };
 
   const generateExcel = (data) => {
-    let products = [];
-    let modifiers = [];
+    try {
+      let products = [];
+      let modifiers = [];
 
-    // extract product prices and tier prices
-    for (const product of data.products) {
-      let productData = {
-        Name: product.backend_name,
-        Price: product.price,
-      };
-      // add tier prices to product data
-      for (let i = 0; i < product.property_tiers.length; i++) {
-        productData[`Tier ${i + 1} Price`] = product.property_tiers[i].price;
+      // extract product prices and tier prices
+      for (const product of data.products) {
+        let productData = {
+          Name: product.name,
+          "Backend Name": product.backend_name,
+          Price: product.price,
+        };
+        // add tier prices to product data
+        for (let i = 0; i < product.property_tiers.length; i++) {
+          productData[`Tier ${i + 1} Price`] = product.property_tiers[i].price;
+        }
+        products.push(productData);
       }
-      products.push(productData);
-    }
 
-    // extract modifier prices and tier prices
-    for (const modifier of data.modifiers) {
-      let modifierData = {
-        Name: modifier.backend_name,
-        Price: modifier.price,
-      };
-      // add tier prices to modifier data
-      for (let i = 0; i < modifier.property_tiers.length; i++) {
-        modifierData[`Tier ${i + 1} Price`] = modifier.property_tiers[i].price;
+      // extract modifier prices and tier prices
+      for (const modifier of data.modifiers) {
+        let modifierData = {
+          Name: modifier.name,
+          "Backend Name": modifier.backend_name,
+          Price: modifier.price,
+        };
+        // add tier prices to modifier data
+        for (let i = 0; i < modifier.property_tiers.length; i++) {
+          modifierData[`Tier ${i + 1} Price`] = modifier.property_tiers[i].price;
+        }
+        modifiers.push(modifierData);
       }
-      modifiers.push(modifierData);
+
+      // create workbook
+      const wb = window.XLSX.utils.book_new();
+
+      // add products sheet
+      const productsSheet = window.XLSX.utils.json_to_sheet(products);
+      window.XLSX.utils.book_append_sheet(wb, productsSheet, "Products");
+
+      // add modifiers sheet
+      const modifiersSheet = window.XLSX.utils.json_to_sheet(modifiers);
+      window.XLSX.utils.book_append_sheet(wb, modifiersSheet, "Modifiers");
+
+      // generate and download the file
+      window.XLSX.writeFile(wb, `${selectedMenuName}.xlsx`);
+    } catch (error) {
+      setErrorMessage("Failed to generate Excel: " + error.message);
+      setIsErrorModalOpen(true);
     }
-
-    // create workbook
-    const wb = window.XLSX.utils.book_new();
-
-    // add products sheet
-    const productsSheet = window.XLSX.utils.json_to_sheet(products);
-    window.XLSX.utils.book_append_sheet(wb, productsSheet, "Products");
-
-    // add modifiers sheet
-    const modifiersSheet = window.XLSX.utils.json_to_sheet(modifiers);
-    window.XLSX.utils.book_append_sheet(wb, modifiersSheet, "Modifiers");
-
-    // generate and download the file
-    window.XLSX.writeFile(wb, "output.xlsx");
   };
 
   // Add the SheetJS library to our page
@@ -183,8 +203,58 @@ export default function Home() {
     };
   }, []);
 
-  const handleDownloadExcelPricesFile = () => {
-    generateExcel(extractedData);
+  const handleDownloadExcelPricesFile = (data) => {
+    generateExcel(data);
+  };
+
+  const updatePricesFromExcel = (excelData, originalData) => {
+    const updatedData = { ...originalData }; // clone originalData to avoid mutation
+
+    // update product prices
+    for (let product of updatedData.products) {
+      const excelProduct = excelData.Products.find((p) => p["Backend Name"] === product.backend_name);
+      if (excelProduct) {
+        product.price = excelProduct.Price;
+        // update tier prices
+        for (let i = 0; i < product.property_tiers.length; i++) {
+          product.property_tiers[i].price = excelProduct[`Tier ${i + 1} Price`];
+        }
+      }
+    }
+
+    // update modifier prices
+    for (let modifier of updatedData.modifiers) {
+      const excelModifier = excelData.Modifiers.find((m) => m["Backend Name"] === modifier.backend_name);
+      if (excelModifier) {
+        modifier.price = excelModifier.Price;
+        // update tier prices
+        for (let i = 0; i < modifier.property_tiers.length; i++) {
+          modifier.property_tiers[i].price = excelModifier[`Tier ${i + 1} Price`];
+        }
+      }
+    }
+
+    return updatedData;
+  };
+
+  const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const data = new Uint8Array(e.target.result);
+      const workbook = window.XLSX.read(data, { type: "array" });
+
+      const productsSheet = workbook.Sheets[workbook.SheetNames[0]];
+      const modifiersSheet = workbook.Sheets[workbook.SheetNames[1]];
+
+      const productsData = window.XLSX.utils.sheet_to_json(productsSheet);
+      const modifiersData = window.XLSX.utils.sheet_to_json(modifiersSheet);
+
+      const updatedData = updatePricesFromExcel({ Products: productsData, Modifiers: modifiersData }, _.cloneDeep(extractedData));
+      // setExtractedData(_.cloneDeep(updatedData));
+      setUpdatedData(_.cloneDeep(updatedData));
+    };
+    reader.readAsArrayBuffer(file);
   };
 
   return (
@@ -216,21 +286,44 @@ export default function Home() {
             onChange={(e) => setPrefixToDelete(e.target.value)}
           />
           <input id="new-prefix" placeholder="New Prefix" value={prefix} onChange={(e) => setPrefix(e.target.value)} />
-          <button onClick={handleSubmit} disabled={fetching}>
-            {fetching ? "Processing..." : "Process Menu"}
+          <button onClick={handleSubmit} disabled={submitting}>
+            {submitting ? "Processing..." : "Process Menu"}
           </button>
         </div>
       )}
-
-      {extractedData && (
-        <div>
-          <h5>Modified Menu:</h5>
-          <button onClick={handleCopy}>{copied ? "Copied!" : "Copy Menu"}</button>
-          <button onClick={handleDownload}>Download Menu</button>
-          <button onClick={handleDownloadExcelPricesFile}>Download Excel</button>
-          <pre>{JSON.stringify(extractedData, null, 2)}</pre>
-        </div>
-      )}
+      <div className="json-data-container">
+        {extractedData && (
+          <div>
+            <h5>Modified Menu:</h5>
+            <h3>{selectedMenuName}</h3>
+            <button onClick={() => handleCopy(extractedData)}>{copied ? "Copied!" : "Copy Menu"}</button>
+            <button onClick={() => handleDownload(extractedData)}>Download Menu</button>
+            <button onClick={() => handleDownloadExcelPricesFile(extractedData)}>Download Excel</button>
+            <input type="file" id="excel-upload" accept=".xlsx" onChange={handleFileUpload} />
+            <pre>{JSON.stringify(extractedData, null, 2)}</pre>
+          </div>
+        )}
+        {updatedData && (
+          <div>
+            <h5>Price Updated Menu:</h5>
+            <h3>{selectedMenuName}</h3>
+            <button onClick={() => handleCopy(updatedData)}>{copied ? "Copied!" : "Copy Menu"}</button>
+            <button onClick={() => handleDownload(updatedData)}>Download Menu</button>
+            <pre>{JSON.stringify(updatedData, null, 2)}</pre>
+          </div>
+        )}
+      </div>
+      <div className={`error-modal ${isErrorModalOpen ? "is-open" : ""}`}>
+        <h2>Error</h2>
+        <p>{errorMessage}</p>
+        <button
+          onClick={() => {
+            setIsErrorModalOpen(false);
+            setErrorMessage("");
+          }}>
+          Close
+        </button>
+      </div>
     </div>
   );
 }

@@ -1,0 +1,12 @@
+.error-modal {
+    display: none;
+    /* Other styling for the modal... */
+}
+
+.error-modal.is-open {
+    display: block;
+}
+
+.json-data-container {
+    display: flex;
+}
