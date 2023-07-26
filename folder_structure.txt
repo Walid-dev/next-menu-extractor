@@ -16,6 +16,8 @@
 │   │   ├── layout.tsx
 │   │   └── page.module.css
 │   ├── components
+│   │   ├── Buttons
+│   │   └── Modals
 │   ├── pages
 │   │   ├── _app.tsx
 │   │   └── index.tsx
@@ -28,4 +30,4 @@
 │   └── types.ts
 └── yarn.lock
 
-10 directories, 19 files
+12 directories, 19 files

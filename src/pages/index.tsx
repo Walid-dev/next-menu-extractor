@@ -186,37 +186,91 @@ export default function Home() {
   };
 
   const updatePricesFromExcel = (excelData, originalData) => {
-    const updatedData = { ...originalData }; // clone originalData to avoid mutation
+    try {
+      // Check if there are any matching backend names in products and modifiers
+      const matchingProducts = originalData.products.some((product) =>
+        excelData.Products.some((excelProduct) => excelProduct["Backend Name"] === product.backend_name)
+      );
 
-    // update product prices
-    for (let product of updatedData.products) {
-      const excelProduct = excelData.Products.find((p) => p["Backend Name"] === product.backend_name);
-      if (excelProduct) {
-        product.price = excelProduct.Price;
+      const matchingModifiers = originalData.modifiers.some((modifier) =>
+        excelData.Modifiers.some((excelModifier) => excelModifier["Backend Name"] === modifier.backend_name)
+      );
+
+      if (!matchingProducts && !matchingModifiers) {
+        setIsErrorModalOpen(true);
+        setErrorMessage(
+          "No matching products or modifiers found in the uploaded data. Please verify if you uploaded the correct menu"
+        );
+        throw new Error(
+          "No matching products or modifiers found in the uploaded data. Please verify if you uploaded the correct menu."
+        );
+      }
+
+      const updatedData = { ...originalData }; // clone originalData to avoid mutation
+      let countProductPricesUpdated = 0;
+      let countModifierPricesUpdated = 0;
+      let productTierCounter = 0;
+      let modifierTierCounter = 0;
+
+      // update product prices
+      for (let product of updatedData.products) {
+        const excelProduct = excelData.Products.find((p) => p["Backend Name"] === product.backend_name);
+        if (excelProduct && excelProduct.Price !== product.price) {
+          product.price = excelProduct.Price;
+          countProductPricesUpdated++;
+        }
+
         // update tier prices
         for (let i = 0; i < product.property_tiers.length; i++) {
-          product.property_tiers[i].price = excelProduct[`Tier ${i + 1} Price`];
+          const newTierPrice = excelProduct[`Tier ${i + 1} Price`];
+          if (excelProduct && newTierPrice !== product.property_tiers[i].price) {
+            product.property_tiers[i].price = newTierPrice;
+            productTierCounter++;
+          }
         }
       }
-    }
 
-    // update modifier prices
-    for (let modifier of updatedData.modifiers) {
-      const excelModifier = excelData.Modifiers.find((m) => m["Backend Name"] === modifier.backend_name);
-      if (excelModifier) {
-        modifier.price = excelModifier.Price;
+      // update modifier prices
+      for (let modifier of updatedData.modifiers) {
+        const excelModifier = excelData.Modifiers.find((m) => m["Backend Name"] === modifier.backend_name);
+        if (excelModifier && excelModifier.Price !== modifier.price) {
+          modifier.price = excelModifier.Price;
+          countModifierPricesUpdated++;
+        }
+
         // update tier prices
         for (let i = 0; i < modifier.property_tiers.length; i++) {
-          modifier.property_tiers[i].price = excelModifier[`Tier ${i + 1} Price`];
+          const newTierPrice = excelModifier[`Tier ${i + 1} Price`];
+          if (excelModifier && newTierPrice !== modifier.property_tiers[i].price) {
+            modifier.property_tiers[i].price = newTierPrice;
+            modifierTierCounter++;
+          }
         }
       }
-    }
 
-    return updatedData;
+      if (countProductPricesUpdated === 0 && countModifierPricesUpdated === 0) {
+        setIsErrorModalOpen(true);
+        setErrorMessage("No prices were updated. Please verify if the data in the Excel file matches the existing data.");
+        throw new Error("No prices were updated. Please verify if the data in the Excel file matches the existing data.");
+      }
+
+      console.log(`Updated prices for ${countProductPricesUpdated} products and ${countModifierPricesUpdated} modifiers.`);
+      console.log(`Updated tier prices for ${productTierCounter} product tiers and ${modifierTierCounter} modifier tiers.`);
+
+      return updatedData;
+    } catch (error) {
+      setErrorMessage("Failed to update prices from Excel: " + error.message);
+      setIsErrorModalOpen(true);
+    }
   };
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
+    // Check that file exists and is of the correct type
+    if (!file || !(file instanceof Blob)) {
+      console.error("No file selected, or selected file is not a Blob or File object");
+      return;
+    }
     const reader = new FileReader();
     reader.onload = (e) => {
       const data = new Uint8Array(e.target.result);
@@ -234,6 +288,7 @@ export default function Home() {
     };
     reader.readAsArrayBuffer(file);
   };
+  
 
   return (
     <div>
