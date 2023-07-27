@@ -5,7 +5,7 @@ import _ from "lodash";
 import * as XLSX from "xlsx";
 import "../style/main.css";
 import fetchData from "@/api/fetchData";
-import ErrorModal from "@/components/Modals/ErrorModal/ErrorModal";
+import SimpleModal from "@/components/Modals/SimpleModal/SimpleModal";
 
 export default function Home() {
   const [headofficeId, setHeadofficeId] = useState("");
@@ -19,8 +19,7 @@ export default function Home() {
   const [extractedData, setExtractedData] = useState(null);
   const [updatedData, setUpdatedData] = useState(null);
   const [copied, setCopied] = useState(false);
-
-  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+  const [isSimpleModalOpen, setIsSimpleModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
   // const fetchUrl = "https://www.mobi2go.com/api/1/headoffice/XXXX/menu?export";
@@ -38,7 +37,7 @@ export default function Home() {
         setMenuList(content.menus);
       })
       .catch((error) => {
-        setIsErrorModalOpen(true);
+        setIsSimpleModalOpen(true);
         setErrorMessage("Fetching menus: " + error.message);
       })
       .finally(() => {
@@ -68,7 +67,7 @@ export default function Home() {
         const modifier_names_to_keep = _.union(...modifier_groups_to_keep.map((modifier_group) => modifier_group.modifiers));
         const modifiers_to_keep = content.modifiers.filter((modifier) => modifier_names_to_keep.includes(modifier.backend_name));
 
-        const output = {
+        const extractedData = {
           menus: menus_to_keep.map((menu) => ({
             ...menu,
             backend_name: `${prefix}${menu.backend_name.replace(prefixToDelete, "")}`,
@@ -97,12 +96,11 @@ export default function Home() {
           })),
         };
 
-        setExtractedData(output);
-        setSelectedMenuName(output.menus[0].backend_name);
+        setExtractedData(extractedData);
+        setSelectedMenuName(extractedData.menus[0].backend_name);
       })
       .catch((error) => {
-        console.error(error);
-        setIsErrorModalOpen(true);
+        setIsSimpleModalOpen(true);
         setErrorMessage("Failed to extract menu: " + error.message);
       })
       .finally(() => {
@@ -177,7 +175,7 @@ export default function Home() {
       XLSX.writeFile(wb, `${selectedMenuName}.xlsx`);
     } catch (error) {
       setErrorMessage("Failed to generate Excel: " + error.message);
-      setIsErrorModalOpen(true);
+      setIsSimpleModalOpen(true);
     }
   };
 
@@ -197,7 +195,7 @@ export default function Home() {
       );
 
       if (!matchingProducts && !matchingModifiers) {
-        setIsErrorModalOpen(true);
+        setIsSimpleModalOpen(true);
         setErrorMessage(
           "No matching products or modifiers found in the uploaded data. Please verify if you uploaded the correct menu"
         );
@@ -249,7 +247,7 @@ export default function Home() {
       }
 
       if (countProductPricesUpdated === 0 && countModifierPricesUpdated === 0) {
-        setIsErrorModalOpen(true);
+        setIsSimpleModalOpen(true);
         setErrorMessage("No prices were updated. Please verify if the data in the Excel file matches the existing data.");
         throw new Error("No prices were updated. Please verify if the data in the Excel file matches the existing data.");
       }
@@ -259,8 +257,9 @@ export default function Home() {
 
       return updatedData;
     } catch (error) {
+      setExtractedData(null);
       setErrorMessage("Failed to update prices from Excel: " + error.message);
-      setIsErrorModalOpen(true);
+      setIsSimpleModalOpen(true);
     }
   };
 
@@ -288,7 +287,6 @@ export default function Home() {
     };
     reader.readAsArrayBuffer(file);
   };
-  
 
   return (
     <div>
@@ -346,11 +344,12 @@ export default function Home() {
           </div>
         )}
       </div>
-      <ErrorModal
-        isOpen={isErrorModalOpen}
+      <SimpleModal
+        isOpen={isSimpleModalOpen}
         message={errorMessage}
+        type={Error}
         handleClose={() => {
-          setIsErrorModalOpen(false);
+          setIsSimpleModalOpen(false);
           setErrorMessage("");
         }}
       />

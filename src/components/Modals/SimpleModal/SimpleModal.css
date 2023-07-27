@@ -1,13 +1,13 @@
-.error-modal {
+.simple-modal {
     display: none;
     /* Other styling for the modal... */
 }
 
-.error-modal.is-open {
+.simple-modal.is-open {
     display: block;
 }
 
-.error-modal {
+.simple-modal {
     position: fixed;
     top: 0;
     bottom: 0;
@@ -19,7 +19,7 @@
     background-color: rgba(0, 0, 0, 0.3);
 }
 
-.error-modal-content {
+.simple-modal-content {
     background: white;
     padding: 20px;
     border-radius: 4px;
@@ -28,11 +28,11 @@
     overflow-y: auto;
 }
 
-.error-modal-content h2 {
+.simple-modal-content h2 {
     margin-top: 0;
 }
 
-.error-modal-content p {
+.simple-modal-content p {
     white-space: pre-wrap;
     /* CSS property that makes the line breaks and whitespace behave like in a <pre> tag */
 }
