@@ -1,6 +1,7 @@
 // @ts-nocheck
 
 import React, { useEffect, useState, useRef } from "react";
+import { Flex } from "@chakra-ui/react";
 import _ from "lodash";
 import * as XLSX from "xlsx";
 import "../style/main.css";
@@ -289,70 +290,72 @@ export default function Home() {
   };
 
   return (
-    <div>
-      <h4>Menu Copy Tool</h4>
+    <Flex>
+      <div>
+        <h4>Menu Copy Tool</h4>
 
-      <input
-        id="headoffice-id"
-        placeholder="Headoffice ID"
-        value={headofficeId}
-        onChange={(e) => setHeadofficeId(e.target.value)}
-      />
-      <button onClick={fetchMenus} disabled={fetching}>
-        {fetching ? "Fetching..." : "Fetch Menus"}
-      </button>
-
-      {menuList.map((menu, index) => (
-        <button key={index} onClick={() => handleMenuClick(menu)}>
-          {menu.backend_name}
+        <input
+          id="headoffice-id"
+          placeholder="Headoffice ID"
+          value={headofficeId}
+          onChange={(e) => setHeadofficeId(e.target.value)}
+        />
+        <button onClick={fetchMenus} disabled={fetching}>
+          {fetching ? "Fetching..." : "Fetch Menus"}
         </button>
-      ))}
 
-      {selectedMenu && (
-        <div>
-          <input
-            id="prefix-to-delete"
-            placeholder="Prefix to Delete"
-            value={prefixToDelete}
-            onChange={(e) => setPrefixToDelete(e.target.value)}
-          />
-          <input id="new-prefix" placeholder="New Prefix" value={prefix} onChange={(e) => setPrefix(e.target.value)} />
-          <button onClick={handleSubmit} disabled={submitting}>
-            {submitting ? "Processing..." : "Process Menu"}
+        {menuList.map((menu, index) => (
+          <button key={index} onClick={() => handleMenuClick(menu)}>
+            {menu.backend_name}
           </button>
+        ))}
+
+        {selectedMenu && (
+          <div>
+            <input
+              id="prefix-to-delete"
+              placeholder="Prefix to Delete"
+              value={prefixToDelete}
+              onChange={(e) => setPrefixToDelete(e.target.value)}
+            />
+            <input id="new-prefix" placeholder="New Prefix" value={prefix} onChange={(e) => setPrefix(e.target.value)} />
+            <button onClick={handleSubmit} disabled={submitting}>
+              {submitting ? "Processing..." : "Process Menu"}
+            </button>
+          </div>
+        )}
+        <div className="json-data-container">
+          {extractedData && (
+            <div>
+              <h5>Modified Menu:</h5>
+              <h3>{selectedMenuName}</h3>
+              <button onClick={() => handleCopy(extractedData)}>{copied ? "Copied!" : "Copy Menu"}</button>
+              <button onClick={() => handleDownload(extractedData)}>Download Menu</button>
+              <button onClick={() => handleDownloadExcelPricesFile(extractedData)}>Download Excel</button>
+              <input type="file" id="excel-upload" accept=".xlsx" onChange={handleFileUpload} />
+              <pre>{JSON.stringify(extractedData, null, 2)}</pre>
+            </div>
+          )}
+          {updatedData && (
+            <div>
+              <h5>Price Updated Menu:</h5>
+              <h3>{selectedMenuName}</h3>
+              <button onClick={() => handleCopy(updatedData)}>{copied ? "Copied!" : "Copy Menu"}</button>
+              <button onClick={() => handleDownload(updatedData)}>Download Menu</button>
+              <pre>{JSON.stringify(updatedData, null, 2)}</pre>
+            </div>
+          )}
         </div>
-      )}
-      <div className="json-data-container">
-        {extractedData && (
-          <div>
-            <h5>Modified Menu:</h5>
-            <h3>{selectedMenuName}</h3>
-            <button onClick={() => handleCopy(extractedData)}>{copied ? "Copied!" : "Copy Menu"}</button>
-            <button onClick={() => handleDownload(extractedData)}>Download Menu</button>
-            <button onClick={() => handleDownloadExcelPricesFile(extractedData)}>Download Excel</button>
-            <input type="file" id="excel-upload" accept=".xlsx" onChange={handleFileUpload} />
-            <pre>{JSON.stringify(extractedData, null, 2)}</pre>
-          </div>
-        )}
-        {updatedData && (
-          <div>
-            <h5>Price Updated Menu:</h5>
-            <h3>{selectedMenuName}</h3>
-            <button onClick={() => handleCopy(updatedData)}>{copied ? "Copied!" : "Copy Menu"}</button>
-            <button onClick={() => handleDownload(updatedData)}>Download Menu</button>
-            <pre>{JSON.stringify(updatedData, null, 2)}</pre>
-          </div>
-        )}
+        <SimpleModal
+          isOpen={isSimpleModalOpen}
+          message={errorMessage}
+          type={Error}
+          handleClose={() => {
+            setIsSimpleModalOpen(false);
+            setErrorMessage("");
+          }}
+        />
       </div>
-      <SimpleModal
-        isOpen={isSimpleModalOpen}
-        message={errorMessage}
-        type={Error}
-        handleClose={() => {
-          setIsSimpleModalOpen(false);
-          setErrorMessage("");
-        }}
-      />
-    </div>
+    </Flex>
   );
 }
