@@ -7,6 +7,7 @@ import * as XLSX from "xlsx";
 import "../style/main.css";
 import fetchData from "@/api/fetchData";
 import SimpleModal from "@/components/Modals/SimpleModal/SimpleModal";
+import { Button, ButtonGroup, Stack } from "@chakra-ui/react";
 
 export default function Home() {
   const [headofficeId, setHeadofficeId] = useState("");
@@ -219,7 +220,7 @@ export default function Home() {
           countProductPricesUpdated++;
         }
 
-        // update tier prices
+        // update product tier prices
         for (let i = 0; i < product.property_tiers.length; i++) {
           const newTierPrice = excelProduct[`Tier ${i + 1} Price`];
           if (excelProduct && newTierPrice !== product.property_tiers[i].price) {
@@ -237,7 +238,7 @@ export default function Home() {
           countModifierPricesUpdated++;
         }
 
-        // update tier prices
+        // update modifier tier prices
         for (let i = 0; i < modifier.property_tiers.length; i++) {
           const newTierPrice = excelModifier[`Tier ${i + 1} Price`];
           if (excelModifier && newTierPrice !== modifier.property_tiers[i].price) {
@@ -289,11 +290,30 @@ export default function Home() {
     reader.readAsArrayBuffer(file);
   };
 
+  // Random color tests
+
+  const colorSchemes: Array<string> = ["teal", "green", "blue", "red", "pink", "purple", "cyan", "orange", "yellow", "gray"];
+
+  let availableColors = [...colorSchemes];
+
+  const getRandomColor = (): string => {
+    if (availableColors.length === 0) {
+      availableColors = [...colorSchemes];
+    }
+
+    const randomIndex = Math.floor(Math.random() * availableColors.length);
+    const chosenColor = availableColors[randomIndex];
+
+    // Remove the chosen color from the available colors.
+    availableColors.splice(randomIndex, 1);
+
+    return chosenColor;
+  };
+
   return (
     <Flex>
       <div>
         <h4>Menu Copy Tool</h4>
-
         <input
           id="headoffice-id"
           placeholder="Headoffice ID"
@@ -303,12 +323,15 @@ export default function Home() {
         <button onClick={fetchMenus} disabled={fetching}>
           {fetching ? "Fetching..." : "Fetch Menus"}
         </button>
-
-        {menuList.map((menu, index) => (
-          <button key={index} onClick={() => handleMenuClick(menu)}>
-            {menu.backend_name}
-          </button>
-        ))}
+        <Stack direction="row" marginTop={3} spacing={2} align="center">
+          <ButtonGroup>
+            {menuList.map((menu, index) => (
+              <Button key={index} colorScheme={getRandomColor()} size="xs" onClick={() => handleMenuClick(menu)}>
+                {menu.backend_name}
+              </Button>
+            ))}
+          </ButtonGroup>
+        </Stack>
 
         {selectedMenu && (
           <div>
