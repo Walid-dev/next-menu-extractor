@@ -7,7 +7,27 @@ import * as XLSX from "xlsx";
 import "../style/main.css";
 import fetchData from "@/api/fetchData";
 import SimpleModal from "@/components/Modals/SimpleModal/SimpleModal";
-import { Button, ButtonGroup, Stack } from "@chakra-ui/react";
+
+
+import {
+  VStack,
+  Heading,
+  Input,
+  Button,
+  ButtonGroup,
+  Stack,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+  Code,
+  Box,
+  InputGroup,
+  InputRightAddon,
+} from "@chakra-ui/react";
 
 export default function Home() {
   const [headofficeId, setHeadofficeId] = useState("");
@@ -23,6 +43,7 @@ export default function Home() {
   const [copied, setCopied] = useState(false);
   const [isSimpleModalOpen, setIsSimpleModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [menuColors, setMenuColors] = useState({});
 
   // const fetchUrl = "https://www.mobi2go.com/api/1/headoffice/XXXX/menu?export";
 
@@ -37,6 +58,16 @@ export default function Home() {
     fetchData(headofficeId)
       .then((content) => {
         setMenuList(content.menus);
+
+        // Only assign colors if menuColors is currently empty
+        if (Object.keys(menuColors).length === 0) {
+          const newMenuColors = {};
+          content.menus.forEach((menu, index) => {
+            // Using index as a unique identifier.
+            newMenuColors[index] = getRandomColor();
+          });
+          setMenuColors(newMenuColors);
+        }
       })
       .catch((error) => {
         setIsSimpleModalOpen(true);
@@ -292,7 +323,7 @@ export default function Home() {
 
   // Random color tests
 
-  const colorSchemes: Array<string> = ["teal", "green", "blue", "red", "pink", "purple", "cyan", "orange", "yellow", "gray"];
+  const colorSchemes: Array<string> = ["teal", "red", "pink", "cyan", "orange", "gray", "purple"];
 
   let availableColors = [...colorSchemes];
 
@@ -311,74 +342,132 @@ export default function Home() {
   };
 
   return (
-    <Flex>
-      <div>
-        <h4>Menu Copy Tool</h4>
-        <input
-          id="headoffice-id"
-          placeholder="Headoffice ID"
-          value={headofficeId}
-          onChange={(e) => setHeadofficeId(e.target.value)}
-        />
-        <button onClick={fetchMenus} disabled={fetching}>
-          {fetching ? "Fetching..." : "Fetch Menus"}
-        </button>
-        <Stack direction="row" marginTop={3} spacing={2} align="center">
-          <ButtonGroup>
-            {menuList.map((menu, index) => (
-              <Button key={index} colorScheme={getRandomColor()} size="xs" onClick={() => handleMenuClick(menu)}>
-                {menu.backend_name}
-              </Button>
-            ))}
-          </ButtonGroup>
-        </Stack>
+    <VStack spacing={5} p={5} align="start" w="100%" maxW="1080px" m="auto">
+      <Heading as="h4" size="sm">
+        Menu Copy Tool
+      </Heading>
 
-        {selectedMenu && (
-          <div>
-            <input
-              id="prefix-to-delete"
-              placeholder="Prefix to Delete"
-              value={prefixToDelete}
-              onChange={(e) => setPrefixToDelete(e.target.value)}
-            />
-            <input id="new-prefix" placeholder="New Prefix" value={prefix} onChange={(e) => setPrefix(e.target.value)} />
-            <button onClick={handleSubmit} disabled={submitting}>
-              {submitting ? "Processing..." : "Process Menu"}
-            </button>
-          </div>
-        )}
-        <div className="json-data-container">
-          {extractedData && (
-            <div>
-              <h5>Modified Menu:</h5>
-              <h3>{selectedMenuName}</h3>
-              <button onClick={() => handleCopy(extractedData)}>{copied ? "Copied!" : "Copy Menu"}</button>
-              <button onClick={() => handleDownload(extractedData)}>Download Menu</button>
-              <button onClick={() => handleDownloadExcelPricesFile(extractedData)}>Download Excel</button>
-              <input type="file" id="excel-upload" accept=".xlsx" onChange={handleFileUpload} />
-              <pre>{JSON.stringify(extractedData, null, 2)}</pre>
-            </div>
-          )}
-          {updatedData && (
-            <div>
-              <h5>Price Updated Menu:</h5>
-              <h3>{selectedMenuName}</h3>
-              <button onClick={() => handleCopy(updatedData)}>{copied ? "Copied!" : "Copy Menu"}</button>
-              <button onClick={() => handleDownload(updatedData)}>Download Menu</button>
-              <pre>{JSON.stringify(updatedData, null, 2)}</pre>
-            </div>
-          )}
-        </div>
-        <SimpleModal
-          isOpen={isSimpleModalOpen}
-          message={errorMessage}
-          type={Error}
-          handleClose={() => {
-            setIsSimpleModalOpen(false);
-            setErrorMessage("");
-          }}
-        />
-      </div>
-    </Flex>
+      <Input
+        size="sm"
+        id="headoffice-id"
+        placeholder="Headoffice ID"
+        value={headofficeId}
+        onChange={(e) => setHeadofficeId(e.target.value)}
+      />
+
+      <Button onClick={fetchMenus} isLoading={fetching} colorScheme="green" size="sm" variant="outline" fontSize="xs" w="full">
+        Fetch Menus
+      </Button>
+
+      <Stack direction="row" spacing={2} align="center">
+        <Flex wrap="wrap" direction="row" spacing={2} align="center">
+          {menuList.map((menu, index) => (
+            <Button
+              key={index}
+              colorScheme={menuColors[index]}
+              size="xs"
+              m={1}
+              fontSize="11px"
+              onClick={() => handleMenuClick(menu)}>
+              {menu.backend_name}
+            </Button>
+          ))}
+        </Flex>
+      </Stack>
+
+      {selectedMenu && (
+        <VStack spacing={3} w="full">
+          <Input
+            id="prefix-to-delete"
+            size="sm"
+            placeholder="Prefix to Delete"
+            value={prefixToDelete}
+            onChange={(e) => setPrefixToDelete(e.target.value)}
+          />
+          <Input id="new-prefix" size="sm" placeholder="New Prefix" value={prefix} onChange={(e) => setPrefix(e.target.value)} />
+          <Button
+            onClick={handleSubmit}
+            isLoading={submitting}
+            size="sm"
+            fontSize="xs"
+            variant="outline"
+            colorScheme="green"
+            w="full">
+            Process Menu
+          </Button>
+        </VStack>
+      )}
+
+      {extractedData && (
+        <VStack spacing={4} w="full" alignItems="start">
+          <Heading as="h5" size="sm">
+            Modified Menu:
+          </Heading>
+          <Heading as="h6" size="sm">
+            {selectedMenuName}
+          </Heading>
+
+          <ButtonGroup>
+            <Button onClick={() => handleCopy(extractedData)} colorScheme="blue" size="sm" fontSize="xs" variant="outline">
+              {copied ? "Copied!" : "Copy Menu"}
+            </Button>
+            <Button onClick={() => handleDownload(extractedData)} colorScheme="green" size="sm" fontSize="xs" variant="outline">
+              Download Menu
+            </Button>
+            <Button
+              onClick={() => handleDownloadExcelPricesFile(extractedData)}
+              colorScheme="yellow"
+              size="sm"
+              fontSize="xs"
+              variant="outline">
+              Download Excel
+            </Button>
+          </ButtonGroup>
+
+          <InputGroup>
+            <Input type="file" id="excel-upload" accept=".xlsx" onChange={handleFileUpload} />
+            <InputRightAddon children="Upload" />
+          </InputGroup>
+
+          <Box as="pre" p={4} bg="gray.100" rounded="md" w="full">
+            <Code display="block" whiteSpace="pre-wrap" fontSize="10px">
+              {JSON.stringify(extractedData, null, 2)}
+            </Code>
+          </Box>
+        </VStack>
+      )}
+
+      {updatedData && (
+        <VStack spacing={4} w="full" alignItems="start">
+          <Heading as="h5" size="sm">
+            Price Updated Menu:
+          </Heading>
+          <Heading as="h3" size="lg">
+            {selectedMenuName}
+          </Heading>
+
+          <Button onClick={() => handleCopy(updatedData)} colorScheme="blue" variant="outline">
+            {copied ? "Copied!" : "Copy Menu"}
+          </Button>
+
+          <Box as="pre" p={4} bg="#434654" rounded="md" w="full">
+            <Code display="block" whiteSpace="pre-wrap">
+              {JSON.stringify(updatedData, null, 2)}
+            </Code>
+          </Box>
+        </VStack>
+      )}
+
+      <Modal isOpen={isSimpleModalOpen} onClose={() => setIsSimpleModalOpen(false)}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Error</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>{errorMessage}</ModalBody>
+        </ModalContent>
+      </Modal>
+    </VStack>
   );
 }
+
+
