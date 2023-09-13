@@ -2,12 +2,12 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import { Flex } from "@chakra-ui/react";
+import { AttachmentIcon } from "@chakra-ui/icons";
 import _ from "lodash";
 import * as XLSX from "xlsx";
 import "../style/main.css";
 import fetchData from "@/api/fetchData";
 import SimpleModal from "@/components/Modals/SimpleModal/SimpleModal";
-
 
 import {
   VStack,
@@ -25,9 +25,11 @@ import {
   ModalCloseButton,
   useDisclosure,
   Code,
+  Icon,
   Box,
   InputGroup,
   InputRightAddon,
+  InputRightElement,
 } from "@chakra-ui/react";
 
 export default function Home() {
@@ -343,24 +345,27 @@ export default function Home() {
   };
 
   return (
-    <VStack spacing={5} p={5} align="start" w="100%" maxW="1080px" m="auto">
+    <VStack spacing={5} p={5} align="start" w="100%" maxW="1080px">
       <Heading as="h4" size="sm">
         Menu Copy Tool
       </Heading>
 
       <Input
         size="sm"
+        bg="mobiColor.200"
+        color="black"
         id="headoffice-id"
         placeholder="Headoffice ID"
+        maxW="220px"
         value={headofficeId}
         onChange={(e) => setHeadofficeId(e.target.value)}
       />
 
-      <Button onClick={fetchMenus} isLoading={fetching} colorScheme="mobiColor" size="sm" color="black" fontSize="xs" w="full">
+      <Button onClick={fetchMenus} isLoading={fetching} colorScheme="mobiColor" size="sm" color="black" fontSize="xs" w="320px">
         Fetch Menus
       </Button>
 
-      <Stack direction="row" spacing={2}>
+      <Stack direction="row" spacing={2} maxW="75%" maxH="55vh" scrollBehavior="smooth" overflowY="scroll">
         <Flex wrap="wrap" direction="row" spacing={2}>
           {menuList.map((menu, index) => (
             <Button
@@ -409,7 +414,7 @@ export default function Home() {
             fontSize="xs"
             colorScheme="mobiColor"
             color="black"
-            w="full">
+            w="320px">
             Process Menu
           </Button>
         </VStack>
@@ -417,9 +422,6 @@ export default function Home() {
 
       {extractedData && (
         <VStack spacing={4} w="full" alignItems="start">
-          <Heading as="h5" size="sm">
-            Modified Menu:
-          </Heading>
           <Heading as="h6" size="sm">
             {selectedMenuName}
           </Heading>
@@ -440,13 +442,22 @@ export default function Home() {
               Download Excel
             </Button>
           </ButtonGroup>
-
-          <InputGroup>
-            <Input type="file" id="excel-upload" accept=".xlsx" onChange={handleFileUpload} />
-            <InputRightAddon children="Upload" />
+          <InputGroup size="md">
+            <Input
+              type="file"
+              id="excel-upload"
+              accept=".xlsx"
+              onChange={handleFileUpload}
+              style={{ display: "none" }} // Hide the default input
+            />
+            <label htmlFor="excel-upload">
+              <Button as="span" rightIcon={<AttachmentIcon />} size="sm" colorScheme="teal" variant="outline">
+                Choose File to update prices
+              </Button>
+            </label>
           </InputGroup>
 
-          <Box as="pre" p={4} bg="gray.100" rounded="md" w="full">
+          <Box as="pre" p={4} bg="gray.100" rounded="md" maxW="520px" maxH="45vh" scrollBehavior="smooth" overflowY="scroll">
             <Code display="block" whiteSpace="pre-wrap" fontSize="10px">
               {JSON.stringify(extractedData, null, 2)}
             </Code>
