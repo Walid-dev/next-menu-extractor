@@ -11,6 +11,7 @@ import SimpleModal from "@/components/Modals/SimpleModal/SimpleModal";
 
 import {
   VStack,
+  HStack,
   Heading,
   Input,
   Button,
@@ -323,7 +324,7 @@ export default function Home() {
 
   // Random color tests
 
-  const colorSchemes: Array<string> = ["teal", "red", "pink", "cyan", "orange", "gray", "purple"];
+  const colorSchemes: Array<string> = ["teal", "red", "pink", "cyan", "orange", "gray", "purple", "mobiColor", "green", "purple"];
 
   let availableColors = [...colorSchemes];
 
@@ -355,16 +356,17 @@ export default function Home() {
         onChange={(e) => setHeadofficeId(e.target.value)}
       />
 
-      <Button onClick={fetchMenus} isLoading={fetching} colorScheme="green" size="sm" variant="outline" fontSize="xs" w="full">
+      <Button onClick={fetchMenus} isLoading={fetching} colorScheme="mobiColor" size="sm" color="black" fontSize="xs" w="full">
         Fetch Menus
       </Button>
 
-      <Stack direction="row" spacing={2} align="center">
-        <Flex wrap="wrap" direction="row" spacing={2} align="center">
+      <Stack direction="row" spacing={2}>
+        <Flex wrap="wrap" direction="row" spacing={2}>
           {menuList.map((menu, index) => (
             <Button
               key={index}
               colorScheme={menuColors[index]}
+              color="black"
               size="xs"
               m={1}
               fontSize="11px"
@@ -376,22 +378,37 @@ export default function Home() {
       </Stack>
 
       {selectedMenu && (
-        <VStack spacing={3} w="full">
-          <Input
-            id="prefix-to-delete"
-            size="sm"
-            placeholder="Prefix to Delete"
-            value={prefixToDelete}
-            onChange={(e) => setPrefixToDelete(e.target.value)}
-          />
-          <Input id="new-prefix" size="sm" placeholder="New Prefix" value={prefix} onChange={(e) => setPrefix(e.target.value)} />
+        <VStack spacing={3} w="full" align="start">
+          <HStack spacing="18px">
+            <Input
+              id="new-prefix"
+              size="sm"
+              bg="mobiColor.200"
+              color="black"
+              maxW="300px"
+              placeholder="Enter New Prefix"
+              value={prefix}
+              onChange={(e) => setPrefix(e.target.value)}
+            />
+            <Input
+              id="prefix-to-delete"
+              size="sm"
+              bg="mobiColor.200"
+              color="black"
+              maxW="300px"
+              placeholder="Enter Prefix to Delete"
+              value={prefixToDelete}
+              onChange={(e) => setPrefixToDelete(e.target.value)}
+            />
+          </HStack>
+
           <Button
             onClick={handleSubmit}
             isLoading={submitting}
             size="sm"
             fontSize="xs"
-            variant="outline"
-            colorScheme="green"
+            colorScheme="mobiColor"
+            color="black"
             w="full">
             Process Menu
           </Button>
@@ -408,18 +425,18 @@ export default function Home() {
           </Heading>
 
           <ButtonGroup>
-            <Button onClick={() => handleCopy(extractedData)} colorScheme="blue" size="sm" fontSize="xs" variant="outline">
+            <Button onClick={() => handleCopy(extractedData)} colorScheme="mobiColor" color="black" size="sm" fontSize="xs">
               {copied ? "Copied!" : "Copy Menu"}
             </Button>
-            <Button onClick={() => handleDownload(extractedData)} colorScheme="green" size="sm" fontSize="xs" variant="outline">
+            <Button onClick={() => handleDownload(extractedData)} colorScheme="mobiColor" color="black" size="sm" fontSize="xs">
               Download Menu
             </Button>
             <Button
               onClick={() => handleDownloadExcelPricesFile(extractedData)}
-              colorScheme="yellow"
+              colorScheme="mobiColor"
+              color="black"
               size="sm"
-              fontSize="xs"
-              variant="outline">
+              fontSize="xs">
               Download Excel
             </Button>
           </ButtonGroup>
