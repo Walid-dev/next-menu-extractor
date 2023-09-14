@@ -1,8 +1,8 @@
 // @ts-nocheck
 
 import React, { useEffect, useState, useRef } from "react";
-import { Flex } from "@chakra-ui/react";
 import { AttachmentIcon } from "@chakra-ui/icons";
+import HeaderMain from "../components/Header/HeaderMain";
 import _ from "lodash";
 import * as XLSX from "xlsx";
 import "../style/main.css";
@@ -10,6 +10,7 @@ import fetchData from "@/api/fetchData";
 import SimpleModal from "@/components/Modals/SimpleModal/SimpleModal";
 
 import {
+  Flex,
   VStack,
   HStack,
   Heading,
@@ -31,6 +32,7 @@ import {
   InputRightAddon,
   InputRightElement,
   Image,
+  Spacer,
 } from "@chakra-ui/react";
 
 export default function Home() {
@@ -346,10 +348,8 @@ export default function Home() {
   };
 
   return (
-    <VStack spacing={5} p={5} align="start" w="100%" maxW="1080px">
-      <Heading as="h4" size="sm">
-        Menu Copy Tool
-      </Heading>
+    <VStack spacing={5} p={5} align="start" w="100%">
+      <HeaderMain />
 
       <Input
         size="xs"
@@ -366,7 +366,7 @@ export default function Home() {
         Fetch Menus
       </Button>
 
-      <Stack direction="row" spacing={2} maxW="75%" maxH="55vh" scrollBehavior="smooth" overflowY="scroll">
+      <Stack direction="row" spacing={2} maxW="780px" maxH="55vh" scrollBehavior="smooth" overflowY="scroll">
         <Flex wrap="wrap" direction="row" my="5px" py="10px" spacing={2}>
           {menuList.map((menu, index) => (
             <Button
