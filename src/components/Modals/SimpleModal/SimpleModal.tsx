@@ -25,6 +25,8 @@ interface SimpleModalProps {
   handleClose?: () => void; // made this optional with ?
 }
 
+
+
 const SimpleModal: React.FC<SimpleModalProps> = ({ isOpen: propsIsOpen, message, type, handleClose }) => {
   const [isOpen, setIsOpen] = useState(propsIsOpen);
 

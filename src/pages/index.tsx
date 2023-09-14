@@ -30,6 +30,7 @@ import {
   InputGroup,
   InputRightAddon,
   InputRightElement,
+  Image,
 } from "@chakra-ui/react";
 
 export default function Home() {
@@ -351,7 +352,7 @@ export default function Home() {
       </Heading>
 
       <Input
-        size="sm"
+        size="xs"
         bg="mobiColor.200"
         color="black"
         id="headoffice-id"
@@ -361,12 +362,12 @@ export default function Home() {
         onChange={(e) => setHeadofficeId(e.target.value)}
       />
 
-      <Button onClick={fetchMenus} isLoading={fetching} colorScheme="mobiColor" size="sm" color="black" fontSize="xs" w="320px">
+      <Button onClick={fetchMenus} isLoading={fetching} colorScheme="mobiColor" size="sm" color="black" fontSize="xs">
         Fetch Menus
       </Button>
 
       <Stack direction="row" spacing={2} maxW="75%" maxH="55vh" scrollBehavior="smooth" overflowY="scroll">
-        <Flex wrap="wrap" direction="row" spacing={2}>
+        <Flex wrap="wrap" direction="row" my="5px" py="10px" spacing={2}>
           {menuList.map((menu, index) => (
             <Button
               key={index}
@@ -387,7 +388,7 @@ export default function Home() {
           <HStack spacing="18px">
             <Input
               id="new-prefix"
-              size="sm"
+              size="xs"
               bg="mobiColor.200"
               color="black"
               maxW="300px"
@@ -397,7 +398,7 @@ export default function Home() {
             />
             <Input
               id="prefix-to-delete"
-              size="sm"
+              size="xs"
               bg="mobiColor.200"
               color="black"
               maxW="300px"
@@ -407,84 +408,98 @@ export default function Home() {
             />
           </HStack>
 
-          <Button
-            onClick={handleSubmit}
-            isLoading={submitting}
-            size="sm"
-            fontSize="xs"
-            colorScheme="mobiColor"
-            color="black"
-            w="320px">
+          <Button onClick={handleSubmit} isLoading={submitting} size="sm" fontSize="xs" colorScheme="mobiColor" color="black">
             Process Menu
           </Button>
         </VStack>
       )}
+      <Stack direction={["column", "row"]} spacing="24px">
+        {extractedData && (
+          <VStack spacing={4} w="full" alignItems="start">
+            <Heading as="h6" size="sm">
+              {selectedMenuName}
+            </Heading>
 
-      {extractedData && (
-        <VStack spacing={4} w="full" alignItems="start">
-          <Heading as="h6" size="sm">
-            {selectedMenuName}
-          </Heading>
-
-          <ButtonGroup>
-            <Button onClick={() => handleCopy(extractedData)} colorScheme="mobiColor" color="black" size="sm" fontSize="xs">
-              {copied ? "Copied!" : "Copy Menu"}
-            </Button>
-            <Button onClick={() => handleDownload(extractedData)} colorScheme="mobiColor" color="black" size="sm" fontSize="xs">
-              Download Menu
-            </Button>
-            <Button
-              onClick={() => handleDownloadExcelPricesFile(extractedData)}
-              colorScheme="mobiColor"
-              color="black"
-              size="sm"
-              fontSize="xs">
-              Download Excel
-            </Button>
-          </ButtonGroup>
-          <InputGroup size="md">
-            <Input
-              type="file"
-              id="excel-upload"
-              accept=".xlsx"
-              onChange={handleFileUpload}
-              style={{ display: "none" }} // Hide the default input
-            />
-            <label htmlFor="excel-upload">
-              <Button as="span" rightIcon={<AttachmentIcon />} size="sm" colorScheme="teal" variant="outline">
-                Choose File to update prices
+            <ButtonGroup>
+              <Button onClick={() => handleCopy(extractedData)} colorScheme="mobiColor" color="black" size="sm" fontSize="xs">
+                {copied ? "Copied!" : "Copy Menu"}
               </Button>
-            </label>
-          </InputGroup>
+              <Button onClick={() => handleDownload(extractedData)} colorScheme="mobiColor" color="black" size="sm" fontSize="xs">
+                Download Menu
+              </Button>
+              <Button
+                onClick={() => handleDownloadExcelPricesFile(extractedData)}
+                colorScheme="mobiColor"
+                color="black"
+                size="sm"
+                fontSize="xs">
+                Download Excel
+              </Button>
+            </ButtonGroup>
+            <InputGroup size="md">
+              <Input
+                type="file"
+                id="excel-upload"
+                accept=".xlsx"
+                onChange={handleFileUpload}
+                style={{ display: "none" }} // Hide the default input
+              />
+              <label htmlFor="excel-upload">
+                <Button as="span" rightIcon={<AttachmentIcon />} size="sm" colorScheme="teal" variant="outline">
+                  Choose File to update prices
+                </Button>
+              </label>
+            </InputGroup>
 
-          <Box as="pre" p={4} bg="gray.100" rounded="md" maxW="520px" maxH="45vh" scrollBehavior="smooth" overflowY="scroll">
-            <Code display="block" whiteSpace="pre-wrap" fontSize="10px">
-              {JSON.stringify(extractedData, null, 2)}
-            </Code>
-          </Box>
-        </VStack>
-      )}
+            <Box as="pre" p={4} bg="gray.100" rounded="md" maxW="520px" maxH="45vh" scrollBehavior="smooth" overflowY="scroll">
+              <Code display="block" whiteSpace="pre-wrap" fontSize="10px">
+                {JSON.stringify(extractedData, null, 2)}
+              </Code>
+            </Box>
+          </VStack>
+        )}
 
-      {updatedData && (
-        <VStack spacing={4} w="full" alignItems="start">
-          <Heading as="h5" size="sm">
-            Price Updated Menu:
-          </Heading>
-          <Heading as="h3" size="lg">
-            {selectedMenuName}
-          </Heading>
+        {updatedData && (
+          <VStack spacing={4} w="full" alignItems="start">
+            <Heading as="h6" size="sm">
+              {selectedMenuName}
+            </Heading>
 
-          <Button onClick={() => handleCopy(updatedData)} colorScheme="blue" variant="outline">
-            {copied ? "Copied!" : "Copy Menu"}
-          </Button>
+            <ButtonGroup>
+              <Button onClick={() => handleCopy(updatedData)} colorScheme="mobiColor" color="black" size="sm" fontSize="xs">
+                {copied ? "Copied!" : "Copy Menu"}
+              </Button>
+              <Button onClick={() => handleDownload(updatedData)} colorScheme="mobiColor" color="black" size="sm" fontSize="xs">
+                Download Menu
+              </Button>
+              <Button
+                onClick={() => handleDownloadExcelPricesFile(updatedData)}
+                colorScheme="mobiColor"
+                color="black"
+                size="sm"
+                fontSize="xs">
+                Download Excel
+              </Button>
+            </ButtonGroup>
 
-          <Box as="pre" p={4} bg="#434654" rounded="md" w="full">
-            <Code display="block" whiteSpace="pre-wrap">
-              {JSON.stringify(updatedData, null, 2)}
-            </Code>
-          </Box>
-        </VStack>
-      )}
+            <Button
+              onClick={() => console.log("will display updated details")}
+              as="span"
+              rightIcon={<AttachmentIcon />}
+              size="sm"
+              colorScheme="green"
+              variant="outline">
+              Details
+            </Button>
+
+            <Box as="pre" p={4} bg="gray.100" rounded="md" maxW="520px" maxH="45vh" scrollBehavior="smooth" overflowY="scroll">
+              <Code display="block" whiteSpace="pre-wrap" fontSize="10px">
+                {JSON.stringify(updatedData, null, 2)}
+              </Code>
+            </Box>
+          </VStack>
+        )}
+      </Stack>
 
       <Modal isOpen={isSimpleModalOpen} onClose={() => setIsSimpleModalOpen(false)}>
         <ModalOverlay />

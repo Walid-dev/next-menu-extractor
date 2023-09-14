@@ -1,6 +1,5 @@
-.simple-modal {
+/* .simple-modal {
     display: none;
-    /* Other styling for the modal... */
 }
 
 .simple-modal.is-open {
@@ -34,5 +33,6 @@
 
 .simple-modal-content p {
     white-space: pre-wrap;
-    /* CSS property that makes the line breaks and whitespace behave like in a <pre> tag */
 }
+
+*/
