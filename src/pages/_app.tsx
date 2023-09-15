@@ -23,8 +23,12 @@ const colors = {
   },
 };
 
+const fonts = {
+  body: "Dosis, system-ui, sans-serif", // Use Roboto for body text
+  heading: "Dosis, system-ui, sans-serif", // Use Roboto for headings
+};
 
-export const theme = extendTheme({ colors });
+export const theme = extendTheme({ colors, fonts });
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (

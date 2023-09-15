@@ -375,7 +375,7 @@ export default function Home() {
               color="black"
               size="xs"
               m={1}
-              fontSize="11px"
+              fontSize=".75em"
               onClick={() => handleMenuClick(menu)}>
               {menu.backend_name}
             </Button>
@@ -408,7 +408,14 @@ export default function Home() {
             />
           </HStack>
 
-          <Button onClick={handleSubmit} isLoading={submitting} size="sm" fontSize="xs" colorScheme="mobiColor" color="black">
+          <Button
+            onClick={handleSubmit}
+            isLoading={submitting}
+            mt="1em"
+            size="sm"
+            fontSize="xs"
+            colorScheme="mobiColor"
+            color="black">
             Process Menu
           </Button>
         </VStack>
