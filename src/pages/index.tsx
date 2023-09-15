@@ -3,6 +3,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { AttachmentIcon } from "@chakra-ui/icons";
 import HeaderMain from "../components/Header/HeaderMain";
+import TypewriterEffect from "@/components/Effects/TypewriterEffect";
 import _ from "lodash";
 import * as XLSX from "xlsx";
 import "../style/main.css";
@@ -350,6 +351,7 @@ export default function Home() {
   return (
     <VStack spacing={5} p={5} align="start" w="100%">
       <HeaderMain />
+      <TypewriterEffect text="Enter your Headoffice ID" speed={60} />
 
       <Input
         size="xs"
@@ -366,8 +368,10 @@ export default function Home() {
         Fetch Menus
       </Button>
 
+      {menuList.length > 0 && <TypewriterEffect text="Select a menu" speed={60} />}
+
       <Stack direction="row" spacing={2} maxW="780px" maxH="55vh" scrollBehavior="smooth" overflowY="scroll">
-        <Flex wrap="wrap" direction="row" my="5px" py="10px" spacing={2}>
+        <Flex wrap="wrap" direction="row" my="5px" py="5px" spacing={2}>
           {menuList.map((menu, index) => (
             <Button
               key={index}
@@ -385,6 +389,7 @@ export default function Home() {
 
       {selectedMenu && (
         <VStack spacing={3} w="full" align="start">
+          <TypewriterEffect text="Add/Remove prefixes for menu duplication or just hit process for price update" speed={50} />
           <HStack spacing="18px">
             <Input
               id="new-prefix"
@@ -426,7 +431,10 @@ export default function Home() {
             <Heading as="h6" size="sm">
               {selectedMenuName}
             </Heading>
-
+            <TypewriterEffect
+              text="Copy raw menu - Download menu as a Json file - Export Excel file for price update - Import price updated Excel file"
+              speed={70}
+            />
             <ButtonGroup>
               <Button onClick={() => handleCopy(extractedData)} colorScheme="mobiColor" color="black" size="sm" fontSize="xs">
                 {copied ? "Copied!" : "Copy Menu"}
