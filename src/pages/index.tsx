@@ -41,7 +41,7 @@ export default function Home() {
   const [headofficeId, setHeadofficeId] = useState("");
   const [menuList, setMenuList] = useState([]);
   const [selectedMenu, setSelectedMenu] = useState(null);
-  const [selectedMenuName, setSelectedMenuName] = useState("");
+  const [selectedMenuName, setSelectedMenuName] = useState(null);
   const [fetching, setFetching] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [prefix, setPrefix] = useState("");
@@ -294,8 +294,8 @@ export default function Home() {
         throw new Error("No prices were updated. Please verify if the data in the Excel file matches the existing data.");
       }
 
-      console.log(`Updated prices for ${countProductPricesUpdated} products and ${countModifierPricesUpdated} modifiers.`);
-      console.log(`Updated tier prices for ${productTierCounter} product tiers and ${modifierTierCounter} modifier tiers.`);
+      console.log(`Updated prices for ${countProductPricesUpdated} products and ${productTierCounter} product tiers.`);
+      console.log(`Updated prices for ${countModifierPricesUpdated} modifier tiers and ${modifierTierCounter} modifier tiers.`);
 
       return updatedData;
     } catch (error) {
@@ -435,7 +435,7 @@ export default function Home() {
             <Box minH="50px">
               <TypewriterEffect text="Download/copy menu or upload Excel file to update prices" speed={70} />
             </Box>
-            <Heading as="h6" size="sm">
+            <Heading as="h6" size="sm" color="#ffffff">
               {selectedMenuName}
             </Heading>
             {/* <TypewriterEffect text="Hover over buttons for details" speed={70} color="mobiColor" /> */}
@@ -465,7 +465,7 @@ export default function Home() {
 
               <HoverEffectButton
                 buttonText="Download Excel"
-                onButtonClick={() => handleDownload(extractedData)}
+                onButtonClick={() => handleDownloadExcelPricesFile(extractedData)}
                 colorScheme="mobiColor"
                 color="black"
                 size="sm"
