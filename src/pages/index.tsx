@@ -4,6 +4,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { AttachmentIcon } from "@chakra-ui/icons";
 import HeaderMain from "../components/Header/HeaderMain";
 import TypewriterEffect from "@/components/Effects/TypewriterEffect";
+import HoverEffectButton from "../components/Buttons/HoverEffectButton"; // Update the import path to the correct location
 import _ from "lodash";
 import * as XLSX from "xlsx";
 import "../style/main.css";
@@ -52,6 +53,8 @@ export default function Home() {
   const [errorMessage, setErrorMessage] = useState("");
   const [menuColors, setMenuColors] = useState({});
 
+  const [hoveredText, setHoveredText] = useState<string | null>(null);
+
   // const fetchUrl = "https://www.mobi2go.com/api/1/headoffice/XXXX/menu?export";
 
   const handleMenuClick = (menu) => {
@@ -65,7 +68,6 @@ export default function Home() {
     fetchData(headofficeId)
       .then((content) => {
         setMenuList(content.menus);
-
         // Only assign colors if menuColors is currently empty
         if (Object.keys(menuColors).length === 0) {
           const newMenuColors = {};
@@ -371,7 +373,7 @@ export default function Home() {
       {menuList.length > 0 && <TypewriterEffect text="Select a menu" speed={60} />}
 
       <Stack direction="row" spacing={2} maxW="780px" maxH="55vh" scrollBehavior="smooth" overflowY="scroll">
-        <Flex wrap="wrap" direction="row" my="5px" py="5px" spacing={2}>
+        <Flex wrap="wrap" direction="row" spacing={2}>
           {menuList.map((menu, index) => (
             <Button
               key={index}
@@ -389,7 +391,9 @@ export default function Home() {
 
       {selectedMenu && (
         <VStack spacing={3} w="full" align="start">
-          <TypewriterEffect text="Add/Remove prefixes for menu duplication or just hit process for price update" speed={50} />
+          <Box minH="50px">
+            <TypewriterEffect text="Adjust prefixes for duplication or hit Process for price update" speed={50} />
+          </Box>
           <HStack spacing="18px">
             <Input
               id="new-prefix"
@@ -421,35 +425,54 @@ export default function Home() {
             fontSize="xs"
             colorScheme="mobiColor"
             color="black">
-            Process Menu
+            Process
           </Button>
         </VStack>
       )}
       <Stack direction={["column", "row"]} spacing="24px">
         {extractedData && (
           <VStack spacing={4} w="full" alignItems="start">
+            <Box minH="50px">
+              <TypewriterEffect text="Download/copy menu or upload Excel file to update prices" speed={70} />
+            </Box>
             <Heading as="h6" size="sm">
               {selectedMenuName}
             </Heading>
-            <TypewriterEffect
-              text="Copy raw menu - Download menu as a Json file - Export Excel file for price update - Import price updated Excel file"
-              speed={70}
-            />
+            {/* <TypewriterEffect text="Hover over buttons for details" speed={70} color="mobiColor" /> */}
             <ButtonGroup>
-              <Button onClick={() => handleCopy(extractedData)} colorScheme="mobiColor" color="black" size="sm" fontSize="xs">
-                {copied ? "Copied!" : "Copy Menu"}
-              </Button>
-              <Button onClick={() => handleDownload(extractedData)} colorScheme="mobiColor" color="black" size="sm" fontSize="xs">
-                Download Menu
-              </Button>
-              <Button
-                onClick={() => handleDownloadExcelPricesFile(extractedData)}
+              <HoverEffectButton
+                buttonText={copied ? "Copied!" : "Copy Menu"}
+                onButtonClick={() => handleCopy(extractedData)}
                 colorScheme="mobiColor"
                 color="black"
                 size="sm"
-                fontSize="xs">
-                Download Excel
-              </Button>
+                fontSize="xs"
+                isCopied={copied}
+                onMouseEnter={() => setHoveredText("Copy raw Json menu")}
+                onMouseLeave={() => setHoveredText(null)}
+              />
+
+              <HoverEffectButton
+                buttonText="Download Menu"
+                onButtonClick={() => handleDownload(extractedData)}
+                colorScheme="mobiColor"
+                color="black"
+                size="sm"
+                fontSize="xs"
+                onMouseEnter={() => setHoveredText("Download menu as a Json file")}
+                onMouseLeave={() => setHoveredText(null)}
+              />
+
+              <HoverEffectButton
+                buttonText="Download Excel"
+                onButtonClick={() => handleDownload(extractedData)}
+                colorScheme="mobiColor"
+                color="black"
+                size="sm"
+                fontSize="xs"
+                onMouseEnter={() => setHoveredText("Download menu as an Excel file")}
+                onMouseLeave={() => setHoveredText(null)}
+              />
             </ButtonGroup>
             <InputGroup size="md">
               <Input
@@ -466,6 +489,8 @@ export default function Home() {
               </label>
             </InputGroup>
 
+            <Box minH="50px">{hoveredText && <TypewriterEffect text={hoveredText} />}</Box>
+
             <Box as="pre" p={4} bg="gray.100" rounded="md" maxW="520px" maxH="45vh" scrollBehavior="smooth" overflowY="scroll">
               <Code display="block" whiteSpace="pre-wrap" fontSize="10px">
                 {JSON.stringify(extractedData, null, 2)}
@@ -476,9 +501,16 @@ export default function Home() {
 
         {updatedData && (
           <VStack spacing={4} w="full" alignItems="start">
+            <Box minH="30px">
+              <TypewriterEffect text="Goog job 🙌 You can now download or copy your menu with prices updated" speed={70} />
+            </Box>
             <Heading as="h6" size="sm">
               {selectedMenuName}
             </Heading>
+
+            {/* <Box w="100%" minH="30px">
+              <TypewriterEffect text="Hover over buttons for details" speed={70} color="mobiColor" />
+            </Box> */}
 
             <ButtonGroup>
               <Button onClick={() => handleCopy(updatedData)} colorScheme="mobiColor" color="black" size="sm" fontSize="xs">
@@ -506,6 +538,8 @@ export default function Home() {
               variant="outline">
               Details
             </Button>
+
+            <Box minH="50px"></Box>
 
             <Box as="pre" p={4} bg="gray.100" rounded="md" maxW="520px" maxH="45vh" scrollBehavior="smooth" overflowY="scroll">
               <Code display="block" whiteSpace="pre-wrap" fontSize="10px">

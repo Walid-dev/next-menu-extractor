@@ -3,10 +3,11 @@ import React, { useState, useEffect } from "react";
 
 interface TypewriterProps {
   text: string;
+  color: string;
   speed?: number;
 }
 
-const TypewriterEffect: React.FC<TypewriterProps> = ({ text, speed = 50 }) => {
+const TypewriterEffect: React.FC<TypewriterProps> = ({ text, color = "white", speed = 50 }) => {
   const [displayedText, setDisplayedText] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -23,7 +24,7 @@ const TypewriterEffect: React.FC<TypewriterProps> = ({ text, speed = 50 }) => {
   }, [currentIndex, text, speed]);
 
   return (
-    <Box w="100%" py={1} color="white">
+    <Box w="100%" minH="50px" color={color}>
       {displayedText}
     </Box>
   );
