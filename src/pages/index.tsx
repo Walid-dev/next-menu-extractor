@@ -10,6 +10,9 @@ import * as XLSX from "xlsx";
 import "../style/main.css";
 import fetchData from "@/api/fetchData";
 import SimpleModal from "@/components/Modals/SimpleModal/SimpleModal";
+import BasicModal from "@/components/Modals/SimpleModal/BasicModal";
+
+import { ModalTypes } from "@/components/Modals/SimpleModal/SimpleModal";
 
 import {
   Flex,
@@ -504,7 +507,7 @@ export default function Home() {
             <Box minH="30px">
               <TypewriterEffect text="Goog job 🙌 You can now download or copy your menu with prices updated" speed={70} />
             </Box>
-            <Heading as="h6" size="sm">
+            <Heading as="h6" size="sm" color="#fffff">
               {selectedMenuName}
             </Heading>
 
@@ -550,16 +553,24 @@ export default function Home() {
         )}
       </Stack>
 
-      <Modal isOpen={isSimpleModalOpen} onClose={() => setIsSimpleModalOpen(false)}>
+      {/* <Modal isOpen={isSimpleModalOpen} onClose={() => setIsSimpleModalOpen(false)}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Error</ModalHeader>
           <ModalCloseButton />
           <ModalBody>{errorMessage}</ModalBody>
         </ModalContent>
-      </Modal>
+      </Modal> */}
+
+      {isSimpleModalOpen && (
+        <SimpleModal
+          isOpen={isSimpleModalOpen}
+          title="titre ici"
+          message={errorMessage}
+          type={ModalTypes.Error}
+          handleClose={() => setIsSimpleModalOpen(false)}
+        />
+      )}
     </VStack>
   );
 }
-
-

@@ -12,7 +12,7 @@ import {
   Box,
 } from "@chakra-ui/react";
 
-enum ModalTypes {
+export enum ModalTypes {
   Error = "Error",
   Info = "Info",
   Warning = "Warning",
@@ -20,19 +20,14 @@ enum ModalTypes {
 
 interface SimpleModalProps {
   isOpen: boolean;
+  title: string;
   message: string;
   type: ModalTypes;
   handleClose?: () => void; // made this optional with ?
 }
 
-
-
-const SimpleModal: React.FC<SimpleModalProps> = ({ isOpen: propsIsOpen, message, type, handleClose }) => {
+const SimpleModal: React.FC<SimpleModalProps> = ({ isOpen: propsIsOpen, title, message, handleClose, type }) => {
   const [isOpen, setIsOpen] = useState(propsIsOpen);
-
-  useEffect(() => {
-    setIsOpen(propsIsOpen);
-  }, [propsIsOpen]);
 
   let colorScheme: string;
 
@@ -51,38 +46,31 @@ const SimpleModal: React.FC<SimpleModalProps> = ({ isOpen: propsIsOpen, message,
   }
 
   const onClose = () => {
-    setIsOpen(false);
     if (handleClose) {
       handleClose();
     }
   };
 
   return (
-    <>
-      <Modal onClose={onClose} isOpen={isOpen} isCentered>
-        <ModalOverlay />
-        <ModalContent>
-          <Box bgColor={`${colorScheme}.500`} color="white">
-            <ModalHeader>{type}</ModalHeader>
-            <ModalCloseButton color="white" />
-          </Box>
-          <ModalBody>
-            <p>{message}</p>
-            <p>
-              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quod reiciendis laudantium hic exercitationem animi, amet
-              facere sapiente non neque perferendis aliquid, incidunt mollitia fuga dolorem facilis voluptates cumque distinctio
-              blanditiis.
-            </p>
-          </ModalBody>
+    <Modal onClose={onClose} isOpen={isOpen} isCentered>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>{title}</ModalHeader>
+        <ModalCloseButton color="black" />
 
-          <ModalFooter>
-            <Button variant="outline" colorScheme={colorScheme} mr={3} onClick={onClose}>
-              Close
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </>
+        <ModalBody>
+          <p>{message}</p>
+          <p>{type}</p>
+        </ModalBody>
+
+        <ModalFooter>
+          <Button colorScheme="blue" mr={3} onClick={onClose}>
+            Close
+          </Button>
+          <Button variant="ghost">Secondary Action</Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   );
 };
 

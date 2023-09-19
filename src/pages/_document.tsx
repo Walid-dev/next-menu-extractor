@@ -8,7 +8,6 @@ class MyDocument extends Document {
           <link
             href="https://fonts.googleapis.com/css2?family=Dosis:wght@300&family=Lato&family=Noto+Sans+Linear+B&family=Noto+Sans+Pau+Cin+Hau&family=Titillium+Web:wght@300&display=swap"
             rel="stylesheet"></link>
-
           {/* You can add other global styles or scripts here */}
         </Head>
         <body>
