@@ -4,9 +4,6 @@
 ├── next-env.d.ts
 ├── next.config.js
 ├── package.json
-├── public
-│   ├── next.svg
-│   └── vercel.svg
 ├── src
 │   ├── api
 │   │   └── fetchData.ts
@@ -14,22 +11,27 @@
 │   │   ├── favicon.ico
 │   │   ├── globals.css
 │   │   ├── layout.tsx
-│   │   └── page.module.css
+│   │   ├── page.module.css
+│   │   └── providers.tsx
 │   ├── components
 │   │   ├── Buttons
+│   │   ├── Effects
 │   │   ├── Forms
+│   │   ├── Header
 │   │   └── Modals
-│   │       └── SimpleModal
 │   ├── pages
 │   │   ├── _app.tsx
+│   │   ├── _document.tsx
 │   │   └── index.tsx
 │   ├── style
 │   │   └── main.css
 │   └── utils
-│       └── extractMenu.ts
+│       ├── extractMenu.ts
+│       ├── getRandomColor.tsx
+│       └── setMenuColors.tsx
 ├── tsconfig.json
 ├── types
 │   └── types.ts
 └── yarn.lock
 
-14 directories, 19 files
+14 directories, 21 files

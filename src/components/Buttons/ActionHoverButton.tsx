@@ -12,7 +12,7 @@ interface Props {
   onMouseLeave: () => void;
 }
 
-const HoverEffectButton: React.FC<Props> = ({
+const ActionHoverButton: React.FC<Props> = ({
   buttonText,
   onButtonClick,
   colorScheme,
@@ -37,4 +37,4 @@ const HoverEffectButton: React.FC<Props> = ({
   );
 };
 
-export default HoverEffectButton;
+export default ActionHoverButton;

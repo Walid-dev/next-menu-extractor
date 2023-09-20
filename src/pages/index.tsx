@@ -1,44 +1,26 @@
 // @ts-nocheck
 
 import React, { useEffect, useState, useRef } from "react";
-import { AttachmentIcon } from "@chakra-ui/icons";
-import HeaderMain from "../components/Header/HeaderMain";
-import TypewriterEffect from "@/components/Effects/TypewriterEffect";
-import HoverEffectButton from "../components/Buttons/HoverEffectButton"; // Update the import path to the correct location
+// Update the import path to the correct location
 import _ from "lodash";
 import * as XLSX from "xlsx";
 import "../style/main.css";
-import fetchData from "@/api/fetchData";
+// Components
 import SimpleModal from "@/components/Modals/SimpleModal/SimpleModal";
-import BasicModal from "@/components/Modals/SimpleModal/BasicModal";
+import HeaderMain from "../components/Header/HeaderMain";
+import TypewriterEffect from "@/components/Effects/TypewriterEffect";
+import ActionHoverButton from "../components/Buttons/ActionHoverButton";
+import Mobi2GoStorefront from "@/components/Embed/Mobi2goStorefront";
 
+// Chakra
+import { Flex, VStack, HStack, Heading, Input, Button, ButtonGroup, Stack, Code, Box, InputGroup } from "@chakra-ui/react";
+import { AttachmentIcon } from "@chakra-ui/icons";
+// Utils
+import fetchData from "@/api/fetchData";
+import assignMenuColors from "../utils/assignMenuColors";
+import handleCopyTest from "@/utils/handleCopyTest";
+// Types
 import { ModalTypes } from "@/components/Modals/SimpleModal/SimpleModal";
-
-import {
-  Flex,
-  VStack,
-  HStack,
-  Heading,
-  Input,
-  Button,
-  ButtonGroup,
-  Stack,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalCloseButton,
-  useDisclosure,
-  Code,
-  Icon,
-  Box,
-  InputGroup,
-  InputRightAddon,
-  InputRightElement,
-  Image,
-  Spacer,
-} from "@chakra-ui/react";
 
 export default function Home() {
   const [headofficeId, setHeadofficeId] = useState("");
@@ -71,14 +53,10 @@ export default function Home() {
     fetchData(headofficeId)
       .then((content) => {
         setMenuList(content.menus);
-        // Only assign colors if menuColors is currently empty
+        // This is your new menu color assignment code.
         if (Object.keys(menuColors).length === 0) {
-          const newMenuColors = {};
-          content.menus.forEach((menu, index) => {
-            // Using index as a unique identifier.
-            newMenuColors[index] = getRandomColor();
-          });
-          setMenuColors(newMenuColors);
+          const newColors = assignMenuColors(content.menus);
+          setMenuColors(newColors);
         }
       })
       .catch((error) => {
@@ -335,29 +313,28 @@ export default function Home() {
 
   // Random color tests
 
-  const colorSchemes: Array<string> = ["teal", "red", "pink", "cyan", "orange", "gray", "purple", "mobiColor", "green", "purple"];
+  // const colorSchemes: Array<string> = ["teal", "red", "pink", "cyan", "orange", "gray", "purple", "mobiColor", "green", "purple"];
 
-  let availableColors = [...colorSchemes];
+  // let availableColors = [...colorSchemes];
 
-  const getRandomColor = (): string => {
-    if (availableColors.length === 0) {
-      availableColors = [...colorSchemes];
-    }
+  // const getRandomColor = (): string => {
+  //   if (availableColors.length === 0) {
+  //     availableColors = [...colorSchemes];
+  //   }
 
-    const randomIndex = Math.floor(Math.random() * availableColors.length);
-    const chosenColor = availableColors[randomIndex];
+  //   const randomIndex = Math.floor(Math.random() * availableColors.length);
+  //   const chosenColor = availableColors[randomIndex];
 
-    // Remove the chosen color from the available colors.
-    availableColors.splice(randomIndex, 1);
+  //   // Remove the chosen color from the available colors.
+  //   availableColors.splice(randomIndex, 1);
 
-    return chosenColor;
-  };
+  //   return chosenColor;
+  // };
 
   return (
     <VStack spacing={5} p={5} align="start" w="100%">
       <HeaderMain />
       <TypewriterEffect text="Enter your Headoffice ID" speed={60} />
-
       <Input
         size="xs"
         bg="mobiColor.200"
@@ -443,7 +420,7 @@ export default function Home() {
             </Heading>
             {/* <TypewriterEffect text="Hover over buttons for details" speed={70} color="mobiColor" /> */}
             <ButtonGroup>
-              <HoverEffectButton
+              <ActionHoverButton
                 buttonText={copied ? "Copied!" : "Copy Menu"}
                 onButtonClick={() => handleCopy(extractedData)}
                 colorScheme="mobiColor"
@@ -455,7 +432,7 @@ export default function Home() {
                 onMouseLeave={() => setHoveredText(null)}
               />
 
-              <HoverEffectButton
+              <ActionHoverButton
                 buttonText="Download Menu"
                 onButtonClick={() => handleDownload(extractedData)}
                 colorScheme="mobiColor"
@@ -466,7 +443,7 @@ export default function Home() {
                 onMouseLeave={() => setHoveredText(null)}
               />
 
-              <HoverEffectButton
+              <ActionHoverButton
                 buttonText="Download Excel"
                 onButtonClick={() => handleDownloadExcelPricesFile(extractedData)}
                 colorScheme="mobiColor"
