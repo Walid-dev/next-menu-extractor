@@ -69,6 +69,14 @@ export default function Home() {
   };
 
   const handleSubmit = () => {
+
+    if (!prefix) {
+      setIsSimpleModalOpen(true);
+      setErrorMessage("Prefix needed");
+
+      return;
+    }
+
     setSubmitting(true);
     fetchData(headofficeId)
       .then((content) => {

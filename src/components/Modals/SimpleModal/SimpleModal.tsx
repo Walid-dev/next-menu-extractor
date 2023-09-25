@@ -29,20 +29,26 @@ interface SimpleModalProps {
 const SimpleModal: React.FC<SimpleModalProps> = ({ isOpen: propsIsOpen, title, message, handleClose, type }) => {
   const [isOpen, setIsOpen] = useState(propsIsOpen);
 
-  let colorScheme: string;
+  let modalColorScheme: string;
+  let modalFontColorScheme: string;
 
   switch (type) {
     case ModalTypes.Error:
-      colorScheme = "red";
+      modalColorScheme = "red";
+      modalFontColorScheme = "white";
       break;
     case ModalTypes.Info:
-      colorScheme = "blue";
+      modalColorScheme = "blue";
+      modalFontColorScheme = "white";
       break;
     case ModalTypes.Warning:
-      colorScheme = "yellow";
+      modalColorScheme = "yellow";
+      modalFontColorScheme = "white";
+
       break;
     default:
-      colorScheme = "gray";
+      modalColorScheme = "gray";
+      modalFontColorScheme = "white";
   }
 
   const onClose = () => {
@@ -58,9 +64,11 @@ const SimpleModal: React.FC<SimpleModalProps> = ({ isOpen: propsIsOpen, title, m
         <ModalHeader>{title}</ModalHeader>
         <ModalCloseButton color="black" />
 
-        <ModalBody>
+        <ModalBody backgroundColor={modalColorScheme} color={modalFontColorScheme}>
           <p>{message}</p>
           <p>{type}</p>
+          <p>{modalColorScheme}</p>
+          <p>{modalFontColorScheme}</p>
         </ModalBody>
 
         <ModalFooter>
