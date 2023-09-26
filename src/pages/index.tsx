@@ -12,6 +12,7 @@ import TypewriterEffect from "@/components/Effects/TypewriterEffect";
 import ActionHoverButton from "../components/Buttons/ActionHoverButton";
 import Mobi2GoStorefront from "@/components/Embed/Mobi2goStorefront";
 import MenuSearch from "@/components/Search/MenusSearch";
+import updatePricesFromExcel from "@/utils/updatePricesFromExcel";
 
 // Chakra
 import { Flex, VStack, HStack, Heading, Input, Button, ButtonGroup, Stack, Code, Box, InputGroup } from "@chakra-ui/react";
@@ -72,7 +73,7 @@ export default function Home() {
   };
 
   const handleSubmit = () => {
-    if (!prefix || !task) {
+    if (prefix || !task) {
       setIsSimpleModalOpen(true);
       setErrorMessage("Prefix needed");
       return;
@@ -233,7 +234,16 @@ export default function Home() {
       const productsData = XLSX.utils.sheet_to_json(productsSheet);
       const modifiersData = XLSX.utils.sheet_to_json(modifiersSheet);
 
-      const updatedData = updatePricesFromExcel({ Products: productsData, Modifiers: modifiersData }, _.cloneDeep(extractedData));
+      // const updatedData = updatePricesFromExcel({ Products: productsData, Modifiers: modifiersData }, _.cloneDeep(extractedData));
+
+      const updatedData = updatePricesFromExcel({
+        excelData: { Products: productsData, Modifiers: modifiersData },
+        originalData: _.cloneDeep(extractedData),
+        setExtractedData,
+        setErrorMessage,
+        setIsSimpleModalOpen,
+      });
+
       // setExtractedData(_.cloneDeep(updatedData));
       setUpdatedData(_.cloneDeep(updatedData));
     };
