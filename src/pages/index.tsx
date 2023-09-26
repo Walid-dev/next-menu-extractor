@@ -40,6 +40,8 @@ export default function Home() {
 
   const [hoveredText, setHoveredText] = useState<string | null>(null);
 
+  const [task, setTask] = useState(null);
+
   // const fetchUrl = "https://www.mobi2go.com/api/1/headoffice/XXXX/menu?export";
 
   const handleMenuClick = (menu) => {
@@ -69,11 +71,9 @@ export default function Home() {
   };
 
   const handleSubmit = () => {
-
-    if (!prefix) {
+    if (!prefix || !task) {
       setIsSimpleModalOpen(true);
       setErrorMessage("Prefix needed");
-
       return;
     }
 
@@ -341,7 +341,7 @@ export default function Home() {
 
   return (
     <VStack spacing={5} p={5} align="start" w="100%">
-      <HeaderMain />
+      <HeaderMain task={task} setTask={setTask} />
       <TypewriterEffect text="Enter your Headoffice ID" speed={60} />
       <Input
         size="xs"
