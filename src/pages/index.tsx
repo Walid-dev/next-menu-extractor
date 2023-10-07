@@ -73,13 +73,15 @@ export default function Home() {
   };
 
   const handleSubmit = () => {
-    if (prefix || !task) {
-      setIsSimpleModalOpen(true);
-      setErrorMessage("Prefix needed");
-      return;
-    }
+    // Check the condition to either display the menu for data extraction or show the Excel file.
+    // if (!prefix || !task) {
+    //   setIsSimpleModalOpen(true);
+    //   setErrorMessage("Prefix needed");
+    //   return;
+    // }
 
     setSubmitting(true);
+
     fetchData(headofficeId)
       .then((content) => {
         const menus_to_copy = [selectedMenu.backend_name];

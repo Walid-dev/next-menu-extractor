@@ -5,7 +5,7 @@ import TypewriterEffect from "../Effects/TypewriterEffect";
 
 const MenuSearch = ({ fetchMenus, fetching, headofficeId, setHeadofficeId }) => {
   return (
-    <Flex direction="column" alignItems="flex-start" gap="20px">
+    <Flex direction="column" alignItems="flex-start" gap="20px" minW="160px">
       <TypewriterEffect text="Enter your Headoffice ID" speed={60} />
       <Input
         size="xs"
