@@ -22,7 +22,8 @@ import fetchData from "@/api/fetchData";
 import assignMenuColors from "../utils/assignMenuColors";
 import handleCopyTest from "@/utils/handleCopyTest";
 // Types
-import { ModalTypes } from "@/components/Modals/SimpleModal/SimpleModal";
+import { SimpleModalType } from "@/components/Modals/SimpleModal/SimpleModal";
+import { calcLength } from "framer-motion";
 
 export default function Home() {
   const [headofficeId, setHeadofficeId] = useState("");
@@ -251,6 +252,10 @@ export default function Home() {
     };
     reader.readAsArrayBuffer(file);
   };
+
+  const sayWech = () => {
+    console.log("Hello");
+  }
 
   // Random color tests
 
@@ -484,11 +489,11 @@ export default function Home() {
 
       {isSimpleModalOpen && (
         <SimpleModal
-          isOpen={isSimpleModalOpen}
-          title="titre ici"
-          message={errorMessage}
-          type={ModalTypes.Error}
-          handleClose={() => setIsSimpleModalOpen(false)}
+          isOpenInitially={isSimpleModalOpen}
+          modalType={SimpleModalType.Info}
+          modalTitle="Perform action title"
+          modalMessage={errorMessage}
+          onCloseModal={() => setIsSimpleModalOpen(false)}
         />
       )}
     </VStack>

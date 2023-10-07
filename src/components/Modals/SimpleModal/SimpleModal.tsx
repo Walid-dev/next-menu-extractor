@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "@/components/Modals/SimpleModal/SimpleModal.css";
 import {
-  Modal,
+  Modal as ChakraModal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
@@ -11,74 +11,87 @@ import {
   Button,
   Box,
 } from "@chakra-ui/react";
+import { calcLength } from "framer-motion";
 
-export enum ModalTypes {
+export enum SimpleModalType {
   Error = "Error",
   Info = "Info",
   Warning = "Warning",
 }
 
 interface SimpleModalProps {
-  isOpen: boolean;
-  title: string;
-  message: string;
-  type: ModalTypes;
-  handleClose?: () => void; // made this optional with ?
+  isOpenInitially: boolean;
+  modalTitle: string;
+  modalMessage: string;
+  modalType: SimpleModalType;
+  secondaryButtonText?: string,
+  onCloseModal?: () => void;
+  onSecondaryAction?: () => void;
 }
 
-const SimpleModal: React.FC<SimpleModalProps> = ({ isOpen: propsIsOpen, title, message, handleClose, type }) => {
-  const [isOpen, setIsOpen] = useState(propsIsOpen);
+const SimpleModal: React.FC<SimpleModalProps> = ({
+  isOpenInitially,
+  modalTitle,
+  modalMessage,
+  secondaryButtonText = `Perform Action`,
+  onCloseModal,
+  onSecondaryAction,
+  modalType,
+}) => {
+  // I use useState to manage the open/close state of the modal.
+  const [isOpen, setIsOpen] = useState(isOpenInitially);
 
-  let modalColorScheme: string;
-  let modalFontColorScheme: string;
+  let backgroundColor: string;
+  let fontColor: string;
 
-  switch (type) {
-    case ModalTypes.Error:
-      modalColorScheme = "red";
-      modalFontColorScheme = "white";
+  // I determine the color scheme based on the modal type.
+  switch (modalType) {
+    case SimpleModalType.Error:
+      backgroundColor = "red";
+      fontColor = "white";
       break;
-    case ModalTypes.Info:
-      modalColorScheme = "blue";
-      modalFontColorScheme = "white";
+    case SimpleModalType.Info:
+      backgroundColor = "#455660";
+      fontColor = "white";
       break;
-    case ModalTypes.Warning:
-      modalColorScheme = "yellow";
-      modalFontColorScheme = "white";
-
+    case SimpleModalType.Warning:
+      backgroundColor = "yellow";
+      fontColor = "white";
       break;
     default:
-      modalColorScheme = "gray";
-      modalFontColorScheme = "white";
+      backgroundColor = "gray";
+      fontColor = "white";
   }
 
-  const onClose = () => {
-    if (handleClose) {
-      handleClose();
+  // I define a function to handle the close operation of the modal.
+  const handleModalClose = () => {
+    if (onCloseModal) {
+      onCloseModal();
     }
   };
 
   return (
-    <Modal onClose={onClose} isOpen={isOpen} isCentered>
+    <ChakraModal onClose={handleModalClose} isOpen={isOpen} isCentered>
       <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>{title}</ModalHeader>
+      <ModalContent backgroundColor={backgroundColor} color={fontColor}>
+        <ModalHeader>{modalTitle}</ModalHeader>
         <ModalCloseButton color="black" />
-
-        <ModalBody backgroundColor={modalColorScheme} color={modalFontColorScheme}>
-          <p>{message}</p>
-          <p>{type}</p>
-          <p>{modalColorScheme}</p>
-          <p>{modalFontColorScheme}</p>
+        <ModalBody>
+          <p>{modalMessage}</p>
+          <p>{modalType}</p>
+          <p>{backgroundColor}</p>
+          <p>{fontColor}</p>
         </ModalBody>
-
         <ModalFooter>
-          <Button colorScheme="blue" mr={3} onClick={onClose}>
+          <Button colorScheme="teal" mr={3} onClick={handleModalClose}>
             Close
           </Button>
-          <Button variant="ghost">Secondary Action</Button>
+          <Button colorScheme="white" variant="outline" onClick={onSecondaryAction}>
+            {secondaryButtonText}
+          </Button>
         </ModalFooter>
       </ModalContent>
-    </Modal>
+    </ChakraModal>
   );
 };
 

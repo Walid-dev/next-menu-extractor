@@ -16,9 +16,11 @@
 │   ├── components
 │   │   ├── Buttons
 │   │   ├── Effects
-│   │   ├── Forms
+│   │   ├── Embed
 │   │   ├── Header
-│   │   └── Modals
+│   │   ├── Menus
+│   │   ├── Modals
+│   │   └── Search
 │   ├── pages
 │   │   ├── _app.tsx
 │   │   ├── _document.tsx
@@ -26,12 +28,14 @@
 │   ├── style
 │   │   └── main.css
 │   └── utils
+│       ├── assignMenuColors.ts
 │       ├── extractMenu.ts
-│       ├── getRandomColor.tsx
-│       └── setMenuColors.tsx
+│       ├── getRandomColor.ts
+│       ├── setMenuColors.ts
+│       └── updatePricesFromExcel.ts
 ├── tsconfig.json
 ├── types
 │   └── types.ts
 └── yarn.lock
 
-14 directories, 21 files
+16 directories, 23 files
