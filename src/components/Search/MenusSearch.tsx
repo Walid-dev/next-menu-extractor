@@ -9,7 +9,7 @@ const MenuSearch = ({ fetchMenus, fetching, headofficeId, setHeadofficeId }) => 
       <TypewriterEffect text="Enter your Headoffice ID" speed={60} />
       <Input
         size="xs"
-        bg="mobiColor.200"
+        bg="white"
         color="black"
         id="headoffice-id"
         placeholder="Headoffice ID"
@@ -18,7 +18,7 @@ const MenuSearch = ({ fetchMenus, fetching, headofficeId, setHeadofficeId }) => 
         onChange={(e) => setHeadofficeId(e.target.value)}
       />
 
-      <Button onClick={fetchMenus} isLoading={fetching} colorScheme="mobiColor" size="sm" color="black" fontSize="xs">
+      <Button onClick={fetchMenus} isLoading={fetching} size="sm" colorScheme="transparent" color="white" border="1px solid #02f9f9" fontSize="xs">
         Fetch Menus
       </Button>
     </Flex>

@@ -73,6 +73,7 @@ const updatePricesFromExcel = ({ excelData, originalData, setExtractedData, setE
     console.log(`Updated prices for ${countModifierPricesUpdated} modifier tiers and ${modifierTierCounter} modifier tiers.`);
 
     return updatedData;
+    
   } catch (error) {
     setExtractedData(null);
     setErrorMessage("Failed to update prices from Excel: " + error.message);
