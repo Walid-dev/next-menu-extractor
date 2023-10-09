@@ -52,6 +52,7 @@ export default function Home() {
   const [isSimpleModalOpen, setIsSimpleModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [menuColors, setMenuColors] = useState({});
+  const [simpleModalType, setSimpleModalType] = useState(SimpleModalType.Info);
 
   const [hoveredText, setHoveredText] = useState<string | null>(null);
 
@@ -77,6 +78,7 @@ export default function Home() {
         }
       })
       .catch((error) => {
+        setSimpleModalType(SimpleModalType.Warning)
         setIsSimpleModalOpen(true);
         setErrorMessage("Fetching menus: " + error.message);
       })
@@ -300,6 +302,7 @@ export default function Home() {
         originalData: _.cloneDeep(extractedData),
         setExtractedData,
         setErrorMessage,
+        setSimpleModalType,
         setIsSimpleModalOpen,
       });
 
@@ -618,7 +621,7 @@ export default function Home() {
       {isSimpleModalOpen && (
         <SimpleModal
           isOpenInitially={isSimpleModalOpen}
-          modalType={SimpleModalType.Info}
+          modalType={simpleModalType}
           modalTitle="Perform action title"
           modalMessage={errorMessage}
           onCloseModal={() => setIsSimpleModalOpen(false)}

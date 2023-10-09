@@ -1,6 +1,10 @@
 // @ts-nocheck
 
-const updatePricesFromExcel = ({ excelData, originalData, setExtractedData, setErrorMessage, setIsSimpleModalOpen }) => {
+import { SimpleModalType } from "@/components/Modals/SimpleModal/SimpleModal";
+
+const updatePricesFromExcel = ({ excelData, originalData, setExtractedData, setErrorMessage, setIsSimpleModalOpen,setSimpleModalType }) => {
+
+
   try {
     // Check if there are any matching backend names in products and modifiers
     const matchingProducts = originalData.products.some((product) =>
@@ -72,11 +76,16 @@ const updatePricesFromExcel = ({ excelData, originalData, setExtractedData, setE
     console.log(`Updated prices for ${countProductPricesUpdated} products and ${productTierCounter} product tiers.`);
     console.log(`Updated prices for ${countModifierPricesUpdated} modifier tiers and ${modifierTierCounter} modifier tiers.`);
 
+    setIsSimpleModalOpen(true);
+    setSimpleModalType(SimpleModalType.Info)
+    setErrorMessage(`Updated prices for ${countProductPricesUpdated} products and ${productTierCounter} product tiers.Updated prices for ${countModifierPricesUpdated} modifier tiers and ${modifierTierCounter} modifier tiers.`)
+
     return updatedData;
     
   } catch (error) {
     setExtractedData(null);
     setErrorMessage("Failed to update prices from Excel: " + error.message);
+    setSimpleModalType(SimpleModalType.Error)
     setIsSimpleModalOpen(true);
   }
 };
