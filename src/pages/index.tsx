@@ -32,6 +32,7 @@ import { AttachmentIcon } from "@chakra-ui/icons";
 // Utils
 import fetchData from "@/api/fetchData";
 import assignMenuColors from "../utils/assignMenuColors";
+import generateExcel from "@/utils/generateExcel";
 import handleCopyTest from "@/utils/handleCopyTest";
 // Types
 import { SimpleModalType } from "@/components/Modals/SimpleModal/SimpleModal";
@@ -78,7 +79,7 @@ export default function Home() {
         }
       })
       .catch((error) => {
-        setSimpleModalType(SimpleModalType.Warning)
+        setSimpleModalType(SimpleModalType.Warning);
         setIsSimpleModalOpen(true);
         setErrorMessage("Fetching menus: " + error.message);
       })
@@ -218,61 +219,10 @@ export default function Home() {
     element.click();
   };
 
-  const generateExcel = (data) => {
-    try {
-      let products = [];
-      let modifiers = [];
-
-      // extract product prices and tier prices
-      for (const product of data.products) {
-        let productData = {
-          Name: product.name,
-          "Backend Name": product.backend_name,
-          Price: product.price,
-        };
-        // add tier prices to product data
-        for (let i = 0; i < product.property_tiers.length; i++) {
-          productData[`Tier ${i + 1} Price`] = product.property_tiers[i].price;
-        }
-        products.push(productData);
-      }
-
-      // extract modifier prices and tier prices
-      for (const modifier of data.modifiers) {
-        let modifierData = {
-          Name: modifier.name,
-          "Backend Name": modifier.backend_name,
-          Price: modifier.price,
-        };
-        // add tier prices to modifier data
-        for (let i = 0; i < modifier.property_tiers.length; i++) {
-          modifierData[`Tier ${i + 1} Price`] =
-            modifier.property_tiers[i].price;
-        }
-        modifiers.push(modifierData);
-      }
-
-      // create workbook
-      const wb = XLSX.utils.book_new();
-
-      // add products sheet
-      const productsSheet = XLSX.utils.json_to_sheet(products);
-      XLSX.utils.book_append_sheet(wb, productsSheet, "Products");
-
-      // add modifiers sheet
-      const modifiersSheet = XLSX.utils.json_to_sheet(modifiers);
-      XLSX.utils.book_append_sheet(wb, modifiersSheet, "Modifiers");
-
-      // generate and download the file
-      XLSX.writeFile(wb, `${selectedMenuName}.xlsx`);
-    } catch (error) {
-      setErrorMessage("Failed to generate Excel: " + error.message);
-      setIsSimpleModalOpen(true);
-    }
-  };
 
   const handleDownloadExcelPricesFile = (data) => {
-    generateExcel(data);
+    generateExcel(data, selectedMenuName, setErrorMessage, setIsSimpleModalOpen, setSimpleModalType);
+    console.log("generated");
   };
 
   const handleFileUpload = (event) => {
@@ -306,7 +256,6 @@ export default function Home() {
         setIsSimpleModalOpen,
       });
 
-      // setExtractedData(_.cloneDeep(updatedData));
       setUpdatedData(_.cloneDeep(updatedData));
     };
     reader.readAsArrayBuffer(file);
@@ -316,44 +265,9 @@ export default function Home() {
     console.log("Hello");
   };
 
-  // Random color tests
-
-  // const colorSchemes: Array<string> = ["teal", "red", "pink", "cyan", "orange", "gray", "purple", "mobiColor", "green", "purple"];
-
-  // let availableColors = [...colorSchemes];
-
-  // const getRandomColor = (): string => {
-  //   if (availableColors.length === 0) {
-  //     availableColors = [...colorSchemes];
-  //   }
-
-  //   const randomIndex = Math.floor(Math.random() * availableColors.length);
-  //   const chosenColor = availableColors[randomIndex];
-
-  //   // Remove the chosen color from the available colors.
-  //   availableColors.splice(randomIndex, 1);
-
-  //   return chosenColor;
-  // };
-
   return (
     <VStack spacing={5} p={5} align="start" w="100%">
       <HeaderMain task={task} setTask={setTask} />
-      {/* <TypewriterEffect text="Enter your Headoffice ID" speed={60} />
-      <Input
-        size="xs"
-        bg="mobiColor.200"
-        color="black"
-        id="headoffice-id"
-        placeholder="Headoffice ID"
-        maxW="220px"
-        value={headofficeId}
-        onChange={(e) => setHeadofficeId(e.target.value)}
-      />
-
-      <Button onClick={fetchMenus} isLoading={fetching} colorScheme="mobiColor" size="sm" color="black" fontSize="xs">
-        Fetch Menus
-      </Button> */}
 
       <MenuSearch
         fetchMenus={fetchMenus}
@@ -448,7 +362,6 @@ export default function Home() {
             <Heading as="h6" size="sm" color="#ffffff">
               {selectedMenuName}
             </Heading>
-            {/* <TypewriterEffect text="Hover over buttons for details" speed={70} color="mobiColor" /> */}
             <ButtonGroup>
               <ActionHoverButton
                 buttonText={copied ? "Copied!" : "Copy Menu"}
@@ -503,7 +416,9 @@ export default function Home() {
                   as="span"
                   rightIcon={<AttachmentIcon />}
                   size="sm"
-                  colorScheme="transparent" color="white" border="1px solid #02f9f9"
+                  colorScheme="transparent"
+                  color="white"
+                  border="1px solid #02f9f9"
                 >
                   Choose File to update prices
                 </Button>
@@ -512,7 +427,6 @@ export default function Home() {
 
             <Box minH="50px">
               {hoveredText && <TypewriterEffect text={hoveredText} />}
-
             </Box>
 
             <Box
@@ -543,10 +457,6 @@ export default function Home() {
             <Heading as="h6" size="sm" color="#fffff">
               {selectedMenuName}
             </Heading>
-
-            {/* <Box w="100%" minH="30px">
-              <TypewriterEffect text="Hover over buttons for details" speed={70} color="mobiColor" />
-            </Box> */}
 
             <ButtonGroup>
               <Button
@@ -608,15 +518,6 @@ export default function Home() {
           </VStack>
         )}
       </Stack>
-
-      {/* <Modal isOpen={isSimpleModalOpen} onClose={() => setIsSimpleModalOpen(false)}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Error</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>{errorMessage}</ModalBody>
-        </ModalContent>
-      </Modal> */}
 
       {isSimpleModalOpen && (
         <SimpleModal
