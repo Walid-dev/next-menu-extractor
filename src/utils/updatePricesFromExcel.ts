@@ -4,7 +4,6 @@ import { SimpleModalType } from "@/components/Modals/SimpleModal/SimpleModal";
 
 const updatePricesFromExcel = ({ excelData, originalData, setExtractedData, setErrorMessage, setIsSimpleModalOpen,setSimpleModalType }) => {
 
-
   try {
     // Check if there are any matching backend names in products and modifiers
     const matchingProducts = originalData.products.some((product) =>

@@ -3,7 +3,6 @@
 import React, { useEffect, useState, useRef } from "react";
 // Update the import path to the correct location
 import _ from "lodash";
-import * as XLSX from "xlsx";
 import "../style/main.css";
 // Components
 import SimpleModal from "@/components/Modals/SimpleModal/SimpleModal";
@@ -15,25 +14,14 @@ import MenuSearch from "@/components/Search/MenusSearch";
 import updatePricesFromExcel from "@/utils/updatePricesFromExcel";
 
 // Chakra
-import {
-  Flex,
-  VStack,
-  HStack,
-  Heading,
-  Input,
-  Button,
-  ButtonGroup,
-  Stack,
-  Code,
-  Box,
-  InputGroup,
-} from "@chakra-ui/react";
+import { Flex, VStack, HStack, Heading, Input, Button, ButtonGroup, Stack, Code, Box, InputGroup } from "@chakra-ui/react";
 import { AttachmentIcon } from "@chakra-ui/icons";
 // Utils
 import fetchData from "@/api/fetchData";
-import assignMenuColors from "../utils/assignMenuColors";
+import assignMenuColors from "@/utils/assignMenuColors";
 import generateExcel from "@/utils/generateExcel";
 import handleCopy from "@/utils/handleCopy";
+import { handleExcelFileUpload } from "@/utils/excelUtils";
 // Types
 import { SimpleModalType } from "@/components/Modals/SimpleModal/SimpleModal";
 import { calcLength } from "framer-motion";
@@ -89,100 +77,54 @@ export default function Home() {
   };
 
   const handleSubmit = () => {
-    // Check the condition to either display the menu for data extraction or show the Excel file.
-    // if (!prefix || !task) {
-    //   setIsSimpleModalOpen(true);
-    //   setErrorMessage("Prefix needed");
-    //   return;
-    // }
-
     setSubmitting(true);
 
     fetchData(headofficeId)
       .then((content) => {
         const menus_to_copy = [selectedMenu.backend_name];
-        const menus_to_keep = content.menus.filter((menu) =>
-          menus_to_copy.includes(menu.backend_name)
-        );
-        const category_names_to_keep = _.union(
-          ...menus_to_keep.map((menu) => menu.categories)
-        );
+        const menus_to_keep = content.menus.filter((menu) => menus_to_copy.includes(menu.backend_name));
+        const category_names_to_keep = _.union(...menus_to_keep.map((menu) => menu.categories));
         const categories_to_keep = content.categories.filter((category) =>
           category_names_to_keep.includes(category.backend_name)
         );
 
-        const product_names_to_keep = _.union(
-          ...categories_to_keep.map((category) => category.products)
-        );
-        const products_to_keep = content.products.filter((product) =>
-          product_names_to_keep.includes(product.backend_name)
+        const product_names_to_keep = _.union(...categories_to_keep.map((category) => category.products));
+        const products_to_keep = content.products.filter((product) => product_names_to_keep.includes(product.backend_name));
+
+        const modifier_group_names_to_keep = _.union(...products_to_keep.map((product) => product.modifier_groups));
+        const modifier_groups_to_keep = content.modifier_groups.filter((modifier_group) =>
+          modifier_group_names_to_keep.includes(modifier_group.backend_name)
         );
 
-        const modifier_group_names_to_keep = _.union(
-          ...products_to_keep.map((product) => product.modifier_groups)
-        );
-        const modifier_groups_to_keep = content.modifier_groups.filter(
-          (modifier_group) =>
-            modifier_group_names_to_keep.includes(modifier_group.backend_name)
-        );
-
-        const modifier_names_to_keep = _.union(
-          ...modifier_groups_to_keep.map(
-            (modifier_group) => modifier_group.modifiers
-          )
-        );
-        const modifiers_to_keep = content.modifiers.filter((modifier) =>
-          modifier_names_to_keep.includes(modifier.backend_name)
-        );
+        const modifier_names_to_keep = _.union(...modifier_groups_to_keep.map((modifier_group) => modifier_group.modifiers));
+        const modifiers_to_keep = content.modifiers.filter((modifier) => modifier_names_to_keep.includes(modifier.backend_name));
 
         const extractedData = {
           menus: menus_to_keep.map((menu) => ({
             ...menu,
-            backend_name: `${prefix}${menu.backend_name.replace(
-              prefixToDelete,
-              ""
-            )}`,
-            categories: menu.categories.map(
-              (category) => `${prefix}${category.replace(prefixToDelete, "")}`
-            ),
+            backend_name: `${prefix}${menu.backend_name.replace(prefixToDelete, "")}`,
+            categories: menu.categories.map((category) => `${prefix}${category.replace(prefixToDelete, "")}`),
           })),
           categories: categories_to_keep.map((category) => ({
             ...category,
-            backend_name: `${prefix}${category.backend_name.replace(
-              prefixToDelete,
-              ""
-            )}`,
-            products: category.products.map(
-              (product) => `${prefix}${product.replace(prefixToDelete, "")}`
-            ),
+            backend_name: `${prefix}${category.backend_name.replace(prefixToDelete, "")}`,
+            products: category.products.map((product) => `${prefix}${product.replace(prefixToDelete, "")}`),
           })),
           products: products_to_keep.map((product) => ({
             ...product,
-            backend_name: `${prefix}${product.backend_name.replace(
-              prefixToDelete,
-              ""
-            )}`,
+            backend_name: `${prefix}${product.backend_name.replace(prefixToDelete, "")}`,
             modifier_groups: product.modifier_groups.map(
-              (modifier_group) =>
-                `${prefix}${modifier_group.replace(prefixToDelete, "")}`
+              (modifier_group) => `${prefix}${modifier_group.replace(prefixToDelete, "")}`
             ),
           })),
           modifier_groups: modifier_groups_to_keep.map((modifier_group) => ({
             ...modifier_group,
-            backend_name: `${prefix}${modifier_group.backend_name.replace(
-              prefixToDelete,
-              ""
-            )}`,
-            modifiers: modifier_group.modifiers.map(
-              (modifier) => `${prefix}${modifier.replace(prefixToDelete, "")}`
-            ),
+            backend_name: `${prefix}${modifier_group.backend_name.replace(prefixToDelete, "")}`,
+            modifiers: modifier_group.modifiers.map((modifier) => `${prefix}${modifier.replace(prefixToDelete, "")}`),
           })),
           modifiers: modifiers_to_keep.map((modifier) => ({
             ...modifier,
-            backend_name: `${prefix}${modifier.backend_name.replace(
-              prefixToDelete,
-              ""
-            )}`,
+            backend_name: `${prefix}${modifier.backend_name.replace(prefixToDelete, "")}`,
           })),
         };
 
@@ -197,12 +139,6 @@ export default function Home() {
         setSubmitting(false);
       });
   };
-
-  // const handleCopy = (data) => {
-  //   navigator.clipboard.writeText(JSON.stringify(data, null, 2));
-  //   setCopied(true);
-  //   setTimeout(() => setCopied(false), 2000);
-  // };
 
   useEffect(() => {
     if (selectedMenu) fetchMenus();
@@ -219,75 +155,32 @@ export default function Home() {
     element.click();
   };
 
-
   const handleDownloadExcelPricesFile = (data) => {
     generateExcel(data, selectedMenuName, setErrorMessage, setIsSimpleModalOpen, setSimpleModalType);
     console.log("generated");
   };
 
   const handleFileUpload = (event) => {
-    const file = event.target.files[0];
-    // Check that file exists and is of the correct type
-    if (!file || !(file instanceof Blob)) {
-      console.error(
-        "No file selected, or selected file is not a Blob or File object"
-      );
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const data = new Uint8Array(e.target.result);
-      const workbook = XLSX.read(data, { type: "array" });
-
-      const productsSheet = workbook.Sheets[workbook.SheetNames[0]];
-      const modifiersSheet = workbook.Sheets[workbook.SheetNames[1]];
-
-      const productsData = XLSX.utils.sheet_to_json(productsSheet);
-      const modifiersData = XLSX.utils.sheet_to_json(modifiersSheet);
-
-      // const updatedData = updatePricesFromExcel({ Products: productsData, Modifiers: modifiersData }, _.cloneDeep(extractedData));
-
-      const updatedData = updatePricesFromExcel({
-        excelData: { Products: productsData, Modifiers: modifiersData },
-        originalData: _.cloneDeep(extractedData),
-        setExtractedData,
-        setErrorMessage,
-        setSimpleModalType,
-        setIsSimpleModalOpen,
-      });
-
-      setUpdatedData(_.cloneDeep(updatedData));
-    };
-    reader.readAsArrayBuffer(file);
-  };
-
-  const sayWech = () => {
-    console.log("Hello");
+    handleExcelFileUpload(
+      event,
+      setUpdatedData,
+      extractedData,
+      setExtractedData,
+      setErrorMessage,
+      setSimpleModalType,
+      setIsSimpleModalOpen
+    );
   };
 
   return (
     <VStack spacing={5} p={5} align="start" w="100%">
       <HeaderMain task={task} setTask={setTask} />
 
-      <MenuSearch
-        fetchMenus={fetchMenus}
-        fetching={fetching}
-        headofficeId={headofficeId}
-        setHeadofficeId={setHeadofficeId}
-      />
+      <MenuSearch fetchMenus={fetchMenus} fetching={fetching} headofficeId={headofficeId} setHeadofficeId={setHeadofficeId} />
 
-      {menuList.length > 0 && (
-        <TypewriterEffect text="Select a menu" speed={60} />
-      )}
+      {menuList.length > 0 && <TypewriterEffect text="Select a menu" speed={60} />}
 
-      <Stack
-        direction="row"
-        spacing={2}
-        maxW="780px"
-        maxH="55vh"
-        scrollBehavior="smooth"
-        overflowY="scroll"
-      >
+      <Stack direction="row" spacing={2} maxW="780px" maxH="55vh" scrollBehavior="smooth" overflowY="scroll">
         <Flex wrap="wrap" direction="row" spacing={2}>
           {menuList.map((menu, index) => (
             <Button
@@ -297,8 +190,7 @@ export default function Home() {
               size="xs"
               m={1}
               fontSize=".75em"
-              onClick={() => handleMenuClick(menu)}
-            >
+              onClick={() => handleMenuClick(menu)}>
               {menu.backend_name}
             </Button>
           ))}
@@ -308,10 +200,7 @@ export default function Home() {
       {selectedMenu && (
         <VStack spacing={3} w="full" align="start">
           <Box minH="50px">
-            <TypewriterEffect
-              text="Adjust prefixes for duplication or hit Process for price update"
-              speed={50}
-            />
+            <TypewriterEffect text="Adjust prefixes for duplication or hit Process for price update" speed={50} />
           </Box>
           <HStack spacing="18px">
             <Input
@@ -344,8 +233,7 @@ export default function Home() {
             fontSize="xs"
             colorScheme="transparent"
             color="white"
-            border="1px solid #02f9f9"
-          >
+            border="1px solid #02f9f9">
             Process
           </Button>
         </VStack>
@@ -354,10 +242,7 @@ export default function Home() {
         {extractedData && (
           <VStack spacing={4} w="full" alignItems="start">
             <Box minH="50px">
-              <TypewriterEffect
-                text="Download/copy menu or upload Excel file to update prices"
-                speed={70}
-              />
+              <TypewriterEffect text="Download/copy menu or upload Excel file to update prices" speed={70} />
             </Box>
             <Heading as="h6" size="sm" color="#ffffff">
               {selectedMenuName}
@@ -382,24 +267,18 @@ export default function Home() {
                 color="black"
                 size="sm"
                 fontSize="xs"
-                onMouseEnter={() =>
-                  setHoveredText("Download menu as a Json file")
-                }
+                onMouseEnter={() => setHoveredText("Download menu as a Json file")}
                 onMouseLeave={() => setHoveredText(null)}
               />
 
               <ActionHoverButton
                 buttonText="Download Excel"
-                onButtonClick={() =>
-                  handleDownloadExcelPricesFile(extractedData)
-                }
+                onButtonClick={() => handleDownloadExcelPricesFile(extractedData)}
                 colorScheme="mobiColor"
                 color="black"
                 size="sm"
                 fontSize="xs"
-                onMouseEnter={() =>
-                  setHoveredText("Download menu as an Excel file")
-                }
+                onMouseEnter={() => setHoveredText("Download menu as an Excel file")}
                 onMouseLeave={() => setHoveredText(null)}
               />
             </ButtonGroup>
@@ -418,27 +297,15 @@ export default function Home() {
                   size="sm"
                   colorScheme="transparent"
                   color="white"
-                  border="1px solid #02f9f9"
-                >
+                  border="1px solid #02f9f9">
                   Choose File to update prices
                 </Button>
               </label>
             </InputGroup>
 
-            <Box minH="50px">
-              {hoveredText && <TypewriterEffect text={hoveredText} />}
-            </Box>
+            <Box minH="50px">{hoveredText && <TypewriterEffect text={hoveredText} />}</Box>
 
-            <Box
-              as="pre"
-              p={4}
-              bg="gray.100"
-              rounded="md"
-              maxW="520px"
-              maxH="45vh"
-              scrollBehavior="smooth"
-              overflowY="scroll"
-            >
+            <Box as="pre" p={4} bg="gray.100" rounded="md" maxW="520px" maxH="45vh" scrollBehavior="smooth" overflowY="scroll">
               <Code display="block" whiteSpace="pre-wrap" fontSize="10px">
                 {JSON.stringify(extractedData, null, 2)}
               </Code>
@@ -449,10 +316,7 @@ export default function Home() {
         {updatedData && (
           <VStack spacing={4} w="full" alignItems="start">
             <Box minH="30px">
-              <TypewriterEffect
-                text="Goog job 🙌 You can now download or copy your menu with prices updated"
-                speed={70}
-              />
+              <TypewriterEffect text="Goog job 🙌 You can now download or copy your menu with prices updated" speed={70} />
             </Box>
             <Heading as="h6" size="sm" color="#fffff">
               {selectedMenuName}
@@ -464,17 +328,10 @@ export default function Home() {
                 colorScheme="mobiColor"
                 color="black"
                 size="sm"
-                fontSize="xs"
-              >
+                fontSize="xs">
                 {copied ? "Copied!" : "Copy Menu"}
               </Button>
-              <Button
-                onClick={() => handleDownload(updatedData)}
-                colorScheme="mobiColor"
-                color="black"
-                size="sm"
-                fontSize="xs"
-              >
+              <Button onClick={() => handleDownload(updatedData)} colorScheme="mobiColor" color="black" size="sm" fontSize="xs">
                 Download Menu
               </Button>
               <Button
@@ -482,8 +339,7 @@ export default function Home() {
                 colorScheme="mobiColor"
                 color="black"
                 size="sm"
-                fontSize="xs"
-              >
+                fontSize="xs">
                 Download Excel
               </Button>
             </ButtonGroup>
@@ -494,23 +350,13 @@ export default function Home() {
               rightIcon={<AttachmentIcon />}
               size="sm"
               colorScheme="green"
-              variant="outline"
-            >
+              variant="outline">
               Details
             </Button>
 
             <Box minH="50px"></Box>
 
-            <Box
-              as="pre"
-              p={4}
-              bg="gray.100"
-              rounded="md"
-              maxW="520px"
-              maxH="45vh"
-              scrollBehavior="smooth"
-              overflowY="scroll"
-            >
+            <Box as="pre" p={4} bg="gray.100" rounded="md" maxW="520px" maxH="45vh" scrollBehavior="smooth" overflowY="scroll">
               <Code display="block" whiteSpace="pre-wrap" fontSize="10px">
                 {JSON.stringify(updatedData, null, 2)}
               </Code>

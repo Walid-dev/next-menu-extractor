@@ -17,6 +17,7 @@
 │   │   ├── Buttons
 │   │   ├── Effects
 │   │   ├── Embed
+│   │   ├── Forms
 │   │   ├── Header
 │   │   ├── Menus
 │   │   ├── Modals
@@ -29,8 +30,12 @@
 │   │   └── main.css
 │   └── utils
 │       ├── assignMenuColors.ts
+│       ├── excelUtils.ts
 │       ├── extractMenu.ts
+│       ├── generateExcel.ts
 │       ├── getRandomColor.ts
+│       ├── handleCopy.ts
+│       ├── processExcelUpload.ts
 │       ├── setMenuColors.ts
 │       └── updatePricesFromExcel.ts
 ├── tsconfig.json
@@ -38,4 +43,4 @@
 │   └── types.ts
 └── yarn.lock
 
-16 directories, 23 files
+17 directories, 27 files
