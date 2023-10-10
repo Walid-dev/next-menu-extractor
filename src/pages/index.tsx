@@ -33,7 +33,7 @@ import { AttachmentIcon } from "@chakra-ui/icons";
 import fetchData from "@/api/fetchData";
 import assignMenuColors from "../utils/assignMenuColors";
 import generateExcel from "@/utils/generateExcel";
-import handleCopyTest from "@/utils/handleCopyTest";
+import handleCopy from "@/utils/handleCopy";
 // Types
 import { SimpleModalType } from "@/components/Modals/SimpleModal/SimpleModal";
 import { calcLength } from "framer-motion";
@@ -198,11 +198,11 @@ export default function Home() {
       });
   };
 
-  const handleCopy = (data) => {
-    navigator.clipboard.writeText(JSON.stringify(data, null, 2));
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
+  // const handleCopy = (data) => {
+  //   navigator.clipboard.writeText(JSON.stringify(data, null, 2));
+  //   setCopied(true);
+  //   setTimeout(() => setCopied(false), 2000);
+  // };
 
   useEffect(() => {
     if (selectedMenu) fetchMenus();
@@ -365,7 +365,7 @@ export default function Home() {
             <ButtonGroup>
               <ActionHoverButton
                 buttonText={copied ? "Copied!" : "Copy Menu"}
-                onButtonClick={() => handleCopy(extractedData)}
+                onButtonClick={() => handleCopy(extractedData, setCopied)}
                 colorScheme="mobiColor"
                 color="black"
                 size="sm"
@@ -460,7 +460,7 @@ export default function Home() {
 
             <ButtonGroup>
               <Button
-                onClick={() => handleCopy(updatedData)}
+                onClick={() => handleCopy(updatedData, setCopied)}
                 colorScheme="mobiColor"
                 color="black"
                 size="sm"
