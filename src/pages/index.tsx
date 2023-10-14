@@ -22,6 +22,7 @@ import assignMenuColors from "@/utils/assignMenuColors";
 import generateExcel from "@/utils/generateExcel";
 import handleCopy from "@/utils/handleCopy";
 import { handleExcelFileUpload } from "@/utils/excelUtils";
+import {downloadFileWithData} from "@/utils/downloadFileWithData"
 // Types
 import { SimpleModalType } from "@/components/Modals/SimpleModal/SimpleModal";
 import { calcLength } from "framer-motion";
@@ -140,24 +141,24 @@ export default function Home() {
       });
   };
 
+
   useEffect(() => {
     if (selectedMenu) fetchMenus();
   }, [selectedMenu]);
 
-  const handleDownload = (data) => {
-    const element = document.createElement("a");
-    const file = new Blob([JSON.stringify(data, null, 2)], {
-      type: "text/plain",
-    });
-    element.href = URL.createObjectURL(file);
-    element.download = `${prefix}${selectedMenu.backend_name}.json`;
-    document.body.appendChild(element); // Required for this to work in FireFox
-    element.click();
-  };
+  // const handleDownload = (data) => {
+  //   const element = document.createElement("a");
+  //   const file = new Blob([JSON.stringify(data, null, 2)], {
+  //     type: "text/plain",
+  //   });
+  //   element.href = URL.createObjectURL(file);
+  //   element.download = `${prefix}${selectedMenu.backend_name}.json`;
+  //   document.body.appendChild(element); // Required for this to work in FireFox
+  //   element.click();
+  // };
 
   const handleDownloadExcelPricesFile = (data) => {
     generateExcel(data, selectedMenuName, setErrorMessage, setIsSimpleModalOpen, setSimpleModalType);
-    console.log("generated");
   };
 
   const handleFileUpload = (event) => {
@@ -262,7 +263,7 @@ export default function Home() {
 
               <ActionHoverButton
                 buttonText="Download Menu"
-                onButtonClick={() => handleDownload(extractedData)}
+                onButtonClick={() => downloadFileWithData(extractedData, `${prefix}${selectedMenu.backend_name}.json`)}
                 colorScheme="mobiColor"
                 color="black"
                 size="sm"
