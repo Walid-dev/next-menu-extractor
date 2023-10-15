@@ -35,6 +35,7 @@ import generateExcel from "@/utils/generateExcel";
 import handleCopy from "@/utils/handleCopy";
 import { handleExcelFileUpload } from "@/utils/excelUtils";
 import { downloadFileWithData } from "@/utils/downloadFileWithData";
+import fetchAndExtractMenus from "@/utils/fetchAndExtractMenus";
 // Types
 import { SimpleModalType } from "@/components/Modals/SimpleModal/SimpleModal";
 
@@ -58,10 +59,6 @@ export default function Home() {
   const [hoveredText, setHoveredText] = useState<string | null>(null);
 
   const [task, setTask] = useState(null);
-
-  // const handleMenuClick = (menu) => {
-  //   setSelectedMenu(menu);
-  // };
 
   const fetchMenus = () => {
     setFetching(true);
@@ -89,104 +86,17 @@ export default function Home() {
   const handleSubmit = () => {
     setSubmitting(true);
 
-    fetchData(headofficeId)
-      .then((content) => {
-        const menus_to_copy = [selectedMenu.backend_name];
-        const menus_to_keep = content.menus.filter((menu) =>
-          menus_to_copy.includes(menu.backend_name)
-        );
-        const category_names_to_keep = _.union(
-          ...menus_to_keep.map((menu) => menu.categories)
-        );
-        const categories_to_keep = content.categories.filter((category) =>
-          category_names_to_keep.includes(category.backend_name)
-        );
-
-        const product_names_to_keep = _.union(
-          ...categories_to_keep.map((category) => category.products)
-        );
-        const products_to_keep = content.products.filter((product) =>
-          product_names_to_keep.includes(product.backend_name)
-        );
-
-        const modifier_group_names_to_keep = _.union(
-          ...products_to_keep.map((product) => product.modifier_groups)
-        );
-        const modifier_groups_to_keep = content.modifier_groups.filter(
-          (modifier_group) =>
-            modifier_group_names_to_keep.includes(modifier_group.backend_name)
-        );
-
-        const modifier_names_to_keep = _.union(
-          ...modifier_groups_to_keep.map(
-            (modifier_group) => modifier_group.modifiers
-          )
-        );
-        const modifiers_to_keep = content.modifiers.filter((modifier) =>
-          modifier_names_to_keep.includes(modifier.backend_name)
-        );
-
-        const extractedData = {
-          menus: menus_to_keep.map((menu) => ({
-            ...menu,
-            backend_name: `${prefix}${menu.backend_name.replace(
-              prefixToDelete,
-              ""
-            )}`,
-            categories: menu.categories.map(
-              (category) => `${prefix}${category.replace(prefixToDelete, "")}`
-            ),
-          })),
-          categories: categories_to_keep.map((category) => ({
-            ...category,
-            backend_name: `${prefix}${category.backend_name.replace(
-              prefixToDelete,
-              ""
-            )}`,
-            products: category.products.map(
-              (product) => `${prefix}${product.replace(prefixToDelete, "")}`
-            ),
-          })),
-          products: products_to_keep.map((product) => ({
-            ...product,
-            backend_name: `${prefix}${product.backend_name.replace(
-              prefixToDelete,
-              ""
-            )}`,
-            modifier_groups: product.modifier_groups.map(
-              (modifier_group) =>
-                `${prefix}${modifier_group.replace(prefixToDelete, "")}`
-            ),
-          })),
-          modifier_groups: modifier_groups_to_keep.map((modifier_group) => ({
-            ...modifier_group,
-            backend_name: `${prefix}${modifier_group.backend_name.replace(
-              prefixToDelete,
-              ""
-            )}`,
-            modifiers: modifier_group.modifiers.map(
-              (modifier) => `${prefix}${modifier.replace(prefixToDelete, "")}`
-            ),
-          })),
-          modifiers: modifiers_to_keep.map((modifier) => ({
-            ...modifier,
-            backend_name: `${prefix}${modifier.backend_name.replace(
-              prefixToDelete,
-              ""
-            )}`,
-          })),
-        };
-
-        setExtractedData(extractedData);
-        setSelectedMenuName(extractedData.menus[0].backend_name);
-      })
-      .catch((error) => {
-        setIsSimpleModalOpen(true);
-        setErrorMessage("Failed to extract menu: " + error.message);
-      })
-      .finally(() => {
-        setSubmitting(false);
-      });
+    fetchAndExtractMenus({
+      headofficeId,
+      prefix,
+      prefixToDelete,
+      selectedMenu,
+      setSelectedMenuName,
+      setExtractedData,
+      setSubmitting,
+      setIsSimpleModalOpen,
+      setErrorMessage,
+    });
   };
 
   useEffect(() => {
@@ -225,10 +135,6 @@ export default function Home() {
         headofficeId={headofficeId}
         setHeadofficeId={setHeadofficeId}
       />
-
-      {menuList.length > 0 && (
-        <TypewriterEffect text="Select a menu" speed={60} />
-      )}
 
       <Stack
         direction="row"
