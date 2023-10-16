@@ -1,21 +1,23 @@
-// @ts-nocheck
-
+// src/utils/updatePricesFromExcel.ts
+import { MenuData, Product, Modifier } from "@/types/MenuData"; // Assuming MenuData is in src/types/MenuData.ts
 import { SimpleModalType } from "@/components/Modals/SimpleModal/SimpleModal";
+
+interface UpdatePricesFromExcelParams {
+  excelData: any;
+  originalData: any;
+  setExtractedData: (data: any) => void;
+  setErrorMessage: (message: string) => void;
+  setIsSimpleModalOpen: (isOpen: boolean) => void;
+  setSimpleModalType: (type: SimpleModalType) => void;
+}
+
 /**
  * Updates product and modifier prices in the original data based on information from an Excel file.
  *
- * @param {Object} params - The parameters object.
- * @param {Object} params.excelData - The data extracted from the Excel file.
- * @param {Object} params.originalData - The original product and modifier data.
- * @param {Function} params.setExtractedData - Function to set the extracted data.
- * @param {Function} params.setErrorMessage - Function to set the error message.
- * @param {Function} params.setIsSimpleModalOpen - Function to open/close the modal.
- * @param {Function} params.setSimpleModalType - Function to set the modal type.
- *
+ * @param {UpdatePricesFromExcelParams} params - The parameters object.
  * @throws Will throw an error if no matching backend names are found in originalData and excelData.
  * @throws Will throw an error if no prices were updated.
- *
- * @returns {Object} The updated product and modifier data.
+ * @returns {MenuData | null} The updated product and modifier data, or null if an error occurs.
  */
 const updatePricesFromExcel = ({
   excelData,
@@ -24,18 +26,18 @@ const updatePricesFromExcel = ({
   setErrorMessage,
   setIsSimpleModalOpen,
   setSimpleModalType,
-}) => {
+}: UpdatePricesFromExcelParams): MenuData | null => {
   try {
     // Deep clone the originalData to avoid mutation
-    const updatedData = JSON.parse(JSON.stringify(originalData));
+    const updatedData = JSON.parse(JSON.stringify(originalData)) as MenuData;
     let countProductPricesUpdated = 0;
     let countModifierPricesUpdated = 0;
     let productTierCounter = 0;
     let modifierTierCounter = 0;
 
     // Iterate through products and update their prices
-    updatedData.products.forEach((product, index) => {
-      const excelProduct = excelData.Products.find((p) => p["Backend Name"] === product.backend_name);
+    updatedData.products.forEach((product: Product, index: number) => {
+      const excelProduct = excelData.Products.find((p: any) => p["Backend Name"] === product.backend_name);
 
       // Update main product price
       if (excelProduct && excelProduct.Price !== product.price) {
@@ -54,8 +56,8 @@ const updatePricesFromExcel = ({
     });
 
     // Iterate through modifiers and update their prices
-    updatedData.modifiers.forEach((modifier, index) => {
-      const excelModifier = excelData.Modifiers.find((m) => m["Backend Name"] === modifier.backend_name);
+    updatedData.modifiers.forEach((modifier: Modifier, index: number) => {
+      const excelModifier = excelData.Modifiers.find((m: any) => m["Backend Name"] === modifier.backend_name);
 
       // Update main modifier price
       if (excelModifier && excelModifier.Price !== modifier.price) {
@@ -88,7 +90,7 @@ const updatePricesFromExcel = ({
     setSimpleModalType(SimpleModalType.Info);
 
     return updatedData;
-  } catch (error) {
+  } catch (error: any) {
     // Handle error scenarios
     setExtractedData(null);
     setErrorMessage(`Failed to update prices from Excel: ${error.message}`);
