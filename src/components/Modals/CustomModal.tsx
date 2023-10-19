@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import "@/components/Modals/SimpleModal/SimpleModal.css";
 import {
   Modal as ChakraModal,
   ModalOverlay,
@@ -13,23 +12,23 @@ import {
 } from "@chakra-ui/react";
 import { calcLength } from "framer-motion";
 
-export enum SimpleModalType {
+export enum CustomModalTypes {
   Error = "Error",
   Info = "Info",
   Warning = "Warning",
 }
 
-interface SimpleModalProps {
+interface CustomModalProps {
   isOpenInitially: boolean;
   modalTitle: string;
   modalMessage: string;
-  modalType: SimpleModalType;
-  secondaryButtonText?: string,
+  modalType: CustomModalTypes;
+  secondaryButtonText?: string;
   onCloseModal?: () => void;
   onSecondaryAction?: () => void;
 }
 
-const SimpleModal: React.FC<SimpleModalProps> = ({
+const CustomModal: React.FC<CustomModalProps> = ({
   isOpenInitially,
   modalTitle,
   modalMessage,
@@ -46,15 +45,15 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
 
   // I determine the color scheme based on the modal type.
   switch (modalType) {
-    case SimpleModalType.Error:
+    case CustomModalTypes.Error:
       backgroundColor = "red";
       fontColor = "white";
       break;
-    case SimpleModalType.Info:
+    case CustomModalTypes.Info:
       backgroundColor = "#455660";
       fontColor = "white";
       break;
-    case SimpleModalType.Warning:
+    case CustomModalTypes.Warning:
       backgroundColor = "yellow";
       fontColor = "white";
       break;
@@ -95,4 +94,4 @@ const SimpleModal: React.FC<SimpleModalProps> = ({
   );
 };
 
-export default SimpleModal;
+export default CustomModal;

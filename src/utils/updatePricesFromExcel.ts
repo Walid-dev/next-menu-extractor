@@ -1,14 +1,14 @@
 // src/utils/updatePricesFromExcel.ts
 import { MenuData, Product, Modifier } from "@/types/MenuData"; // Assuming MenuData is in src/types/MenuData.ts
-import { SimpleModalType } from "@/components/Modals/SimpleModal/SimpleModal";
+import { CustomModalTypes } from "@/components/Modals/CustomModal";
 
 interface UpdatePricesFromExcelParams {
   excelData: any;
   originalData: any;
   setExtractedData: (data: any) => void;
   setErrorMessage: (message: string) => void;
-  setIsSimpleModalOpen: (isOpen: boolean) => void;
-  setSimpleModalType: (type: SimpleModalType) => void;
+  setIsCustomModalOpen: (isOpen: boolean) => void;
+  setCustomModalType: (type: CustomModalTypes) => void;
 }
 
 /**
@@ -24,8 +24,8 @@ const updatePricesFromExcel = ({
   originalData,
   setExtractedData,
   setErrorMessage,
-  setIsSimpleModalOpen,
-  setSimpleModalType,
+  setIsCustomModalOpen,
+  setCustomModalType,
 }: UpdatePricesFromExcelParams): MenuData | null => {
   try {
     // Deep clone the originalData to avoid mutation
@@ -78,24 +78,24 @@ const updatePricesFromExcel = ({
     // Validate if any prices were updated
     if (countProductPricesUpdated === 0 && countModifierPricesUpdated === 0) {
       setErrorMessage("No prices were updated. Verify the Excel data.");
-      setIsSimpleModalOpen(true);
-      setSimpleModalType(SimpleModalType.Error);
+      setIsCustomModalOpen(true);
+      setCustomModalType(CustomModalTypes.Error);
       return null;
     }
 
     // Set success message and modal type
     const successMessage = `Updated prices for ${countProductPricesUpdated} products and ${productTierCounter} product tiers. Updated prices for ${countModifierPricesUpdated} modifiers and ${modifierTierCounter} modifier tiers.`;
     setErrorMessage(successMessage);
-    setIsSimpleModalOpen(true);
-    setSimpleModalType(SimpleModalType.Info);
+    setIsCustomModalOpen(true);
+    setCustomModalType(CustomModalTypes.Info);
 
     return updatedData;
   } catch (error: any) {
     // Handle error scenarios
     setExtractedData(null);
     setErrorMessage(`Failed to update prices from Excel: ${error.message}`);
-    setIsSimpleModalOpen(true);
-    setSimpleModalType(SimpleModalType.Error);
+    setIsCustomModalOpen(true);
+    setCustomModalType(CustomModalTypes.Error);
     return null;
   }
 };

@@ -12,8 +12,8 @@ import updatePricesFromExcel from "./updatePricesFromExcel"; // Replace with the
  * @param {Function} setUpdatedData - State setter function for the updated data.
  * @param {Object} extractedData - The initial data before the update.
  * @param {Function} setErrorMessage - State setter function for any error messages.
- * @param {Function} setSimpleModalType - State setter function for the modal type.
- * @param {Function} setIsSimpleModalOpen - State setter function for the modal visibility.
+ * @param {Function} setCustomModalType - State setter function for the modal type.
+ * @param {Function} setIsCustomModalOpen - State setter function for the modal visibility.
  */
 export const handleExcelFileUpload = (
   event,
@@ -21,8 +21,8 @@ export const handleExcelFileUpload = (
   extractedData,
   setExtractedData,
   setErrorMessage,
-  setSimpleModalType,
-  setIsSimpleModalOpen
+  setCustomModalType,
+  setIsCustomModalOpen
 ) => {
   const file = event.target.files[0];
 
@@ -49,8 +49,8 @@ export const handleExcelFileUpload = (
       originalData: _.cloneDeep(extractedData),
       setExtractedData,
       setErrorMessage,
-      setSimpleModalType,
-      setIsSimpleModalOpen,
+      setCustomModalType,
+      setIsCustomModalOpen,
     });
 
     setUpdatedData(_.cloneDeep(updatedData));

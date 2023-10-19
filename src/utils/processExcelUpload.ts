@@ -11,11 +11,11 @@ import _ from "lodash";
  * @param {Function} setUpdatedData - State setter function for the updated data.
  * @param {Object} extractedData - The initial data before the update.
  * @param {Function} setErrorMessage - State setter function for any error messages.
- * @param {Function} setSimpleModalType - State setter function for the modal type.
- * @param {Function} setIsSimpleModalOpen - State setter function for the modal visibility.
+ * @param {Function} setCustomModalType - State setter function for the modal type.
+ * @param {Function} setIsCustomModalOpen - State setter function for the modal visibility.
  */
 
-const processExcelUpload = (event, setUpdatedData, extractedData, setErrorMessage, setSimpleModalType, setIsSimpleModalOpen) => {
+const processExcelUpload = (event, setUpdatedData, extractedData, setErrorMessage, setCustomModalType, setIsCustomModalOpen) => {
   // Get the file from the event object
   const file = event.target.files[0];
 
@@ -41,8 +41,8 @@ const processExcelUpload = (event, setUpdatedData, extractedData, setErrorMessag
       originalData: _.cloneDeep(extractedData),
       setExtractedData,
       setErrorMessage,
-      setSimpleModalType,
-      setIsSimpleModalOpen,
+      setCustomModalType,
+      setIsCustomModalOpen,
     });
 
     // Update the state with the new data

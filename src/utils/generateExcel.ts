@@ -1,15 +1,9 @@
 // @ts-nocheck
 
 import * as XLSX from "xlsx";
-import { SimpleModalType } from "@/components/Modals/SimpleModal/SimpleModal";
+import { CustomModalTypes } from "@/components/Modals/CustomModal";
 
-const generateExcel = (
-  data,
-  selectedMenuName,
-  setErrorMessage,
-  setIsSimpleModalOpen,
-  setSimpleModalType
-) => {
+const generateExcel = (data, selectedMenuName, setErrorMessage, setIsCustomModalOpen, setCustomModalType) => {
   try {
     let products = [];
     let modifiers = [];
@@ -56,8 +50,8 @@ const generateExcel = (
     // generate and download the file
     XLSX.writeFile(wb, `${selectedMenuName}.xlsx`);
   } catch (error) {
-    setIsSimpleModalOpen(true);
-    setSimpleModalType(SimpleModalType.Error);
+    setIsCustomModalOpen(true);
+    setCustomModalType(CustomModalTypes.Error);
     setErrorMessage("Failed to generate Excel: " + error.message);
   }
 };
