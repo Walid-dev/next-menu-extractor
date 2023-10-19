@@ -46,15 +46,18 @@ const CustomModal: React.FC<CustomModalProps> = ({
   // I determine the color scheme based on the modal type.
   switch (modalType) {
     case CustomModalTypes.Error:
-      backgroundColor = "red";
+      modalTitle = "Error";
+      backgroundColor = "#B22222";
       fontColor = "white";
       break;
     case CustomModalTypes.Info:
+      modalTitle = "Info";
       backgroundColor = "#455660";
       fontColor = "white";
       break;
     case CustomModalTypes.Warning:
-      backgroundColor = "yellow";
+      modalTitle = "Warning";
+      backgroundColor = "#DAA520";
       fontColor = "white";
       break;
     default:
@@ -77,16 +80,13 @@ const CustomModal: React.FC<CustomModalProps> = ({
         <ModalCloseButton color="black" />
         <ModalBody>
           <p>{modalMessage}</p>
-          <p>{modalType}</p>
-          <p>{backgroundColor}</p>
-          <p>{fontColor}</p>
         </ModalBody>
         <ModalFooter>
-          <Button colorScheme="teal" mr={3} onClick={handleModalClose}>
-            Close
-          </Button>
-          <Button colorScheme="white" variant="outline" onClick={onSecondaryAction}>
+          <Button colorScheme="white" mr={3} variant="outline" onClick={onSecondaryAction}>
             {secondaryButtonText}
+          </Button>
+          <Button colorScheme="teal" onClick={handleModalClose}>
+            Close
           </Button>
         </ModalFooter>
       </ModalContent>

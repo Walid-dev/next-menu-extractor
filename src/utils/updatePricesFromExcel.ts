@@ -77,14 +77,14 @@ const updatePricesFromExcel = ({
 
     // Validate if any prices were updated
     if (countProductPricesUpdated === 0 && countModifierPricesUpdated === 0) {
-      setErrorMessage("No prices were updated. Verify the Excel data.");
+      setErrorMessage("Unable to find matching items. Ensure Excel data and menu name are correct.");
       setIsCustomModalOpen(true);
-      setCustomModalType(CustomModalTypes.Error);
+      setCustomModalType(CustomModalTypes.Warning);
       return null;
     }
 
     // Set success message and modal type
-    const successMessage = `Updated prices for ${countProductPricesUpdated} products and ${productTierCounter} product tiers. Updated prices for ${countModifierPricesUpdated} modifiers and ${modifierTierCounter} modifier tiers.`;
+    const successMessage = `Successfully updated prices for: ${countProductPricesUpdated} products, ${productTierCounter} product tiers, ${countModifierPricesUpdated} modifiers, ${modifierTierCounter} modifier tiers.`;
     setErrorMessage(successMessage);
     setIsCustomModalOpen(true);
     setCustomModalType(CustomModalTypes.Info);

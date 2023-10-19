@@ -15,7 +15,7 @@ const HeaderMain = ({ task, setTask }) => {
         <Button size="sm" colorScheme="teal">
           Log in
         </Button>
-        <Image boxSize="40px" src="https://static.mobi2go.com/images/214985" alt="sustaining team logo" />
+        <Image boxSize="40px" src="https://static.mobi2go.com/images/216165" alt="sustaining team logo" />
       </ButtonGroup>
     </Flex>
   );

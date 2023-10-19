@@ -39,6 +39,7 @@ export default function Home() {
   const [extractedData, setExtractedData] = useState(null);
   const [updatedData, setUpdatedData] = useState(null);
   const [copied, setCopied] = useState(false);
+  const [copiedUpdatedMenu, setCopiedUpdatedMenu] = useState(false);
   const [isCustomModalOpen, setIsCustomModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [menuColors, setMenuColors] = useState({});
@@ -62,7 +63,7 @@ export default function Home() {
         }
       })
       .catch((error) => {
-        setCustomModalType(CustomModalTypes.Warning);
+        setCustomModalType(CustomModalTypes.Error);
         setIsCustomModalOpen(true);
         setErrorMessage("Fetching menus: " + error.message);
       })
@@ -164,9 +165,9 @@ export default function Home() {
         {extractedData && (
           <VStack spacing={4} w="full" alignItems="start">
             <Box minH="50px">
-              <TypewriterEffect text="Download/copy menu or upload Excel file to update prices" speed={70} />
+              <TypewriterEffect text="Download/copy menu or upload Excel file to update prices" speed={60} />
             </Box>
-            <Heading as="h6" size="sm" color="#ffffff">
+            <Heading as="h6" size="sm" color="white">
               {selectedMenuName}
             </Heading>
             <ButtonGroup>
@@ -179,7 +180,7 @@ export default function Home() {
                 fontSize="xs"
                 isCopied={copied}
                 onMouseEnter={() => setHoveredText("Copy raw Json menu")}
-                onMouseLeave={() => setHoveredText(null)}
+                onMouseLeave={() => setHoveredText("")}
               />
 
               <ActionHoverButton
@@ -190,7 +191,7 @@ export default function Home() {
                 size="sm"
                 fontSize="xs"
                 onMouseEnter={() => setHoveredText("Download menu as a Json file")}
-                onMouseLeave={() => setHoveredText(null)}
+                onMouseLeave={() => setHoveredText("")}
               />
 
               <ActionHoverButton
@@ -201,7 +202,7 @@ export default function Home() {
                 size="sm"
                 fontSize="xs"
                 onMouseEnter={() => setHoveredText("Download menu as an Excel file")}
-                onMouseLeave={() => setHoveredText(null)}
+                onMouseLeave={() => setHoveredText("")}
               />
             </ButtonGroup>
             <InputGroup size="md">
@@ -215,6 +216,7 @@ export default function Home() {
               <label htmlFor="excel-upload">
                 <Button
                   as="span"
+                  cursor="pointer"
                   rightIcon={<AttachmentIcon />}
                   size="sm"
                   colorScheme="transparent"
@@ -240,40 +242,57 @@ export default function Home() {
             <Box minH="30px">
               <TypewriterEffect text="Goog job 🙌 You can now download or copy your menu with prices updated" speed={70} />
             </Box>
-            <Heading as="h6" size="sm" color="#fffff">
+            <Heading as="h6" size="sm" color="white">
               {selectedMenuName}
             </Heading>
 
             <ButtonGroup>
-              <Button
-                onClick={() => handleCopy(updatedData, setCopied)}
+              <ActionHoverButton
+                buttonText={copiedUpdatedMenu ? "Copied!" : "Copy Menu"}
+                onButtonClick={() => handleCopy(updatedData, setCopiedUpdatedMenu)}
                 colorScheme="mobiColor"
                 color="black"
                 size="sm"
-                fontSize="xs">
-                {copied ? "Copied!" : "Copy Menu"}
-              </Button>
-              <Button onClick={() => handleDownload(updatedData)} colorScheme="mobiColor" color="black" size="sm" fontSize="xs">
-                Download Menu
-              </Button>
-              <Button
-                onClick={() => handleDownloadExcelPricesFile(updatedData)}
+                fontSize="xs"
+                isCopied={copiedUpdatedMenu}
+                onMouseEnter={() => setHoveredText("Copy raw updated Json menu")}
+                onMouseLeave={() => setHoveredText("")}
+              />
+
+              <ActionHoverButton
+                buttonText="Download Menu"
+                onButtonClick={() => downloadFileWithData(updatedData, `menu_updated.json`)}
                 colorScheme="mobiColor"
                 color="black"
                 size="sm"
-                fontSize="xs">
-                Download Excel
-              </Button>
+                fontSize="xs"
+                onMouseEnter={() => setHoveredText("Download updated menu as a Json file")}
+                onMouseLeave={() => setHoveredText("")}
+              />
+              <ActionHoverButton
+                buttonText="Download Excel"
+                onButtonClick={() => handleDownloadExcelPricesFile(updatedData)}
+                colorScheme="mobiColor"
+                color="black"
+                size="sm"
+                fontSize="xs"
+                onMouseEnter={() => setHoveredText("Download updated menu as an Excel file")}
+                onMouseLeave={() => setHoveredText("")}
+              />
             </ButtonGroup>
 
             <Button
-              onClick={() => console.log("will display updated details")}
+              onClick={() => {
+                setIsCustomModalOpen(true);
+              }}
               as="span"
+              cursor="pointer"
               rightIcon={<AttachmentIcon />}
               size="sm"
-              colorScheme="green"
-              variant="outline">
-              Details
+              colorScheme="transparent"
+              color="white"
+              border="1px solid #02f9f9">
+              Show Details
             </Button>
 
             <Box minH="50px"></Box>
@@ -291,7 +310,7 @@ export default function Home() {
         <CustomModal
           isOpenInitially={isCustomModalOpen}
           modalType={CustomModalType}
-          modalTitle="Perform action title"
+          modalTitle="Custom Modal Title"
           modalMessage={errorMessage}
           onCloseModal={() => setIsCustomModalOpen(false)}
         />

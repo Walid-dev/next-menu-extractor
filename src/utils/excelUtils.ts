@@ -4,6 +4,7 @@
 import * as XLSX from "xlsx";
 import _ from "lodash";
 import updatePricesFromExcel from "./updatePricesFromExcel"; // Replace with the actual path
+import CustomModal, { CustomModalTypes } from "@/components/Modals/CustomModal";
 
 /**
  * Reads Excel data and processes it to update prices.

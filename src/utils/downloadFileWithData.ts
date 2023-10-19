@@ -8,7 +8,7 @@ const PLAIN_TEXT_MIME_TYPE = "text/plain";
  * @param {string} fileName - The name of the file to download.
  * @return {void}
  */
-export const downloadFileWithData = (data: any, fileName: string): void => {
+export const downloadFileWithData = (data: any, fileName: string = "menu"): void => {
   const element = document.createElement("a");
 
   // I create a blob out of the data passed in
