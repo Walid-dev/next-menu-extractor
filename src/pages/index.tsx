@@ -11,6 +11,7 @@ import TypewriterEffect from "@/components/Effects/TypewriterEffect";
 import ActionHoverButton from "../components/Buttons/ActionHoverButton";
 import MenuSearch from "@/components/Search/MenusSearch";
 import MenuList from "@/components/Menus/MenuLists";
+import TaskActionButton from "@/components/Buttons/TaskActionButton";
 import updatePricesFromExcel from "@/utils/updatePricesFromExcel";
 
 // Chakra
@@ -160,17 +161,9 @@ export default function Home() {
             />
           </HStack>
 
-          <Button
-            onClick={handleSubmit}
-            isLoading={submitting}
-            mt="1em"
-            size="sm"
-            fontSize="xs"
-            colorScheme="transparent"
-            color="white"
-            border="1px solid #02f9f9">
+          <TaskActionButton onClick={handleSubmit} isLoading={submitting} mt="1em">
             Process
-          </Button>
+          </TaskActionButton>
         </VStack>
       )}
       <Stack direction={["column", "row"]} spacing="24px">
@@ -226,16 +219,9 @@ export default function Home() {
                 style={{ display: "none" }} // Hide the default input
               />
               <label htmlFor="excel-upload">
-                <Button
-                  as="span"
-                  cursor="pointer"
-                  rightIcon={<AttachmentIcon />}
-                  size="sm"
-                  colorScheme="transparent"
-                  color="white"
-                  border="1px solid #02f9f9">
+                <TaskActionButton as="span" cursor="pointer" rightIcon={<AttachmentIcon />}>
                   Choose File to update prices
-                </Button>
+                </TaskActionButton>
               </label>
             </InputGroup>
 
@@ -293,19 +279,15 @@ export default function Home() {
               />
             </ButtonGroup>
 
-            <Button
+            <TaskActionButton
               onClick={() => {
                 setIsCustomModalOpen(true);
               }}
               as="span"
               cursor="pointer"
-              rightIcon={<AttachmentIcon />}
-              size="sm"
-              colorScheme="transparent"
-              color="white"
-              border="1px solid #02f9f9">
+              rightIcon={<AttachmentIcon />}>
               Show Details
-            </Button>
+            </TaskActionButton>
 
             <Box minH="50px"></Box>
 

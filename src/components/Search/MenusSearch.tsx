@@ -2,6 +2,7 @@
 
 import { Flex, Input, Button } from "@chakra-ui/react";
 import TypewriterEffect from "../Effects/TypewriterEffect";
+import TaskActionButton from "../Buttons/TaskActionButton";
 
 const MenuSearch = ({ fetchMenus, fetching, headofficeId, setHeadofficeId }) => {
   return (
@@ -18,9 +19,16 @@ const MenuSearch = ({ fetchMenus, fetching, headofficeId, setHeadofficeId }) => 
         onChange={(e) => setHeadofficeId(e.target.value)}
       />
 
-      <Button onClick={fetchMenus} isLoading={fetching} size="sm" colorScheme="transparent" color="white" border="1px solid #02f9f9" fontSize="xs">
+      <TaskActionButton
+        onClick={fetchMenus}
+        isLoading={fetching}
+        size="sm"
+        colorScheme="transparent"
+        color="white"
+        border="1px solid #02f9f9"
+        fontSize="xs">
         Fetch Menus
-      </Button>
+      </TaskActionButton>
     </Flex>
   );
 };
