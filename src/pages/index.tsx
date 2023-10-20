@@ -51,8 +51,6 @@ export default function Home() {
 
   const [task, setTask] = useState(null);
 
-  console.log(selectedMenuName, newMenuName);
-
   const fetchMenus = () => {
     setFetching(true);
     setExtractedData(null);
@@ -172,7 +170,7 @@ export default function Home() {
             <Box minH="50px">
               <TypewriterEffect text="Download/copy menu or upload Excel file to update prices" speed={60} />
             </Box>
-            <Heading as="h6" size="sm" color="white">
+            <Heading as="h6" size="sm" color="#4e99eb">
               {newMenuName}
             </Heading>
             <ButtonGroup>
@@ -238,9 +236,9 @@ export default function Home() {
         {updatedData && (
           <VStack spacing={4} w="full" alignItems="start">
             <Box minH="30px">
-              <TypewriterEffect text="Goog job 🙌 You can now download or copy your menu with prices updated" speed={70} />
+              <TypewriterEffect text="Amazing job 🙌 You can now download or copy your menu with prices updated" speed={70} />
             </Box>
-            <Heading as="h6" size="sm" color="white">
+            <Heading as="h6" size="sm" color="#3ff58b">
               {newMenuName}
             </Heading>
 
