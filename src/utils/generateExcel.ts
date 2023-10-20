@@ -3,7 +3,7 @@
 import * as XLSX from "xlsx";
 import { CustomModalTypes } from "@/components/Modals/CustomModal";
 
-const generateExcel = (data, selectedMenuName, setErrorMessage, setIsCustomModalOpen, setCustomModalType) => {
+const generateExcel = (data, newMenuName, setErrorMessage, setIsCustomModalOpen, setCustomModalType) => {
   try {
     let products = [];
     let modifiers = [];
@@ -48,7 +48,7 @@ const generateExcel = (data, selectedMenuName, setErrorMessage, setIsCustomModal
     XLSX.utils.book_append_sheet(wb, modifiersSheet, "Modifiers");
 
     // generate and download the file
-    XLSX.writeFile(wb, `${selectedMenuName}.xlsx`);
+    XLSX.writeFile(wb, `${newMenuName}.xlsx`);
   } catch (error) {
     setIsCustomModalOpen(true);
     setCustomModalType(CustomModalTypes.Error);

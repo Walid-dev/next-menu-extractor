@@ -12,6 +12,11 @@ const TypewriterEffect: React.FC<TypewriterProps> = ({ text, color = "white", sp
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
+    setDisplayedText(""); // Reset displayed text
+    setCurrentIndex(0); // Reset index
+  }, [text]);
+
+  useEffect(() => {
     if (currentIndex < text.length) {
       const timer = setTimeout(() => {
         setDisplayedText((prev) => prev + text.charAt(currentIndex));

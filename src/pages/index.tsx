@@ -32,6 +32,7 @@ export default function Home() {
   const [menuList, setMenuList] = useState([]);
   const [selectedMenu, setSelectedMenu] = useState(null);
   const [selectedMenuName, setSelectedMenuName] = useState(null);
+  const [newMenuName, setNewMenuName] = useState("");
   const [fetching, setFetching] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [prefix, setPrefix] = useState("");
@@ -49,6 +50,8 @@ export default function Home() {
 
   const [task, setTask] = useState(null);
 
+  console.log(selectedMenuName, newMenuName);
+
   const fetchMenus = () => {
     setFetching(true);
     setExtractedData(null);
@@ -56,8 +59,10 @@ export default function Home() {
     fetchData(headofficeId)
       .then((content) => {
         setMenuList(content.menus);
-        const newColors = assignMenuColors(content.menus);
-        setMenuColors(newColors);
+        if (Object.keys(menuColors).length === 0) {
+          const newColors = assignMenuColors(content.menus);
+          setMenuColors(newColors);
+        }
       })
       .catch((error) => {
         setCustomModalType(CustomModalTypes.Error);
@@ -77,7 +82,7 @@ export default function Home() {
       prefix,
       prefixToDelete,
       selectedMenu,
-      setSelectedMenuName,
+      setNewMenuName,
       setExtractedData,
       setSubmitting,
       setIsCustomModalOpen,
@@ -90,7 +95,7 @@ export default function Home() {
   }, [selectedMenu]);
 
   const handleDownloadExcelPricesFile = (data) => {
-    generateExcel(data, selectedMenuName, setErrorMessage, setIsCustomModalOpen, setCustomModalType);
+    generateExcel(data, newMenuName, setErrorMessage, setIsCustomModalOpen, setCustomModalType);
   };
 
   const handleFileUpload = (event) => {
@@ -117,7 +122,7 @@ export default function Home() {
             menuList={menuList}
             handleMenuClick={(menu) => {
               setSelectedMenu(menu);
-              console.log(menu.name);
+              setSelectedMenuName(menu.backend_name);
             }}
             menuColors={menuColors}
           />
@@ -127,7 +132,10 @@ export default function Home() {
       {selectedMenu && (
         <VStack spacing={3} w="full" align="start">
           <Box minH="50px">
-            <TypewriterEffect text="Adjust prefixes for duplication or hit Process for price update" speed={50} />
+            <TypewriterEffect
+              text={`${selectedMenuName}: Adjust prefixes for duplication or hit Process for price update`}
+              speed={50}
+            />
           </Box>
           <HStack spacing="18px">
             <Input
@@ -172,7 +180,7 @@ export default function Home() {
               <TypewriterEffect text="Download/copy menu or upload Excel file to update prices" speed={60} />
             </Box>
             <Heading as="h6" size="sm" color="white">
-              {selectedMenuName}
+              {newMenuName}
             </Heading>
             <ButtonGroup>
               <ActionHoverButton
@@ -247,7 +255,7 @@ export default function Home() {
               <TypewriterEffect text="Goog job 🙌 You can now download or copy your menu with prices updated" speed={70} />
             </Box>
             <Heading as="h6" size="sm" color="white">
-              {selectedMenuName}
+              {newMenuName}
             </Heading>
 
             <ButtonGroup>

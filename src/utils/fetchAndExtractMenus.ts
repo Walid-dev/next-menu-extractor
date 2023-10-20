@@ -14,7 +14,7 @@ import fetchData from "@/api/fetchData";
  * @param {string} params.prefixToDelete - Prefix to be removed from backend names.
  * @param {Function} params.setExtractedData - Setter for extracted data.
  * @param {Object} params.selectedMenu - Selected menu information.
- * @param {Function} params.setSelectedMenuName - Setter for selected menu name.
+ * @param {Function} params.setNewMenuName - Setter for selected menu name.
  * @param {Function} params.setSubmitting - Setter for submitting state.
  * @param {Function} params.setIsCustomModalOpen - Setter for modal open state.
  * @param {Function} params.setErrorMessage - Setter for error message.
@@ -25,7 +25,7 @@ const fetchAndExtractMenus = ({
   prefixToDelete,
   setExtractedData,
   selectedMenu,
-  setSelectedMenuName,
+  setNewMenuName,
   setSubmitting,
   setIsCustomModalOpen,
   setErrorMessage,
@@ -78,7 +78,7 @@ const fetchAndExtractMenus = ({
       };
 
       setExtractedData(extractedData);
-      setSelectedMenuName(extractedData.menus[0].backend_name);
+      setNewMenuName(extractedData.menus[0].backend_name);
     })
     .catch((error) => {
       setIsCustomModalOpen(true);
