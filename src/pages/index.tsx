@@ -56,11 +56,8 @@ export default function Home() {
     fetchData(headofficeId)
       .then((content) => {
         setMenuList(content.menus);
-        // This is your new menu color assignment code.
-        if (Object.keys(menuColors).length === 0) {
-          const newColors = assignMenuColors(content.menus);
-          setMenuColors(newColors);
-        }
+        const newColors = assignMenuColors(content.menus);
+        setMenuColors(newColors);
       })
       .catch((error) => {
         setCustomModalType(CustomModalTypes.Error);
@@ -116,7 +113,14 @@ export default function Home() {
 
       <Stack direction="row" spacing={2} maxW="780px" maxH="55vh" scrollBehavior="smooth" overflowY="scroll">
         <Flex wrap="wrap" direction="row" spacing={2}>
-          <MenuList menuList={menuList} handleMenuClick={(menu) => setSelectedMenu(menu)} menuColors={menuColors} />
+          <MenuList
+            menuList={menuList}
+            handleMenuClick={(menu) => {
+              setSelectedMenu(menu);
+              console.log(menu.name);
+            }}
+            menuColors={menuColors}
+          />
         </Flex>
       </Stack>
 
