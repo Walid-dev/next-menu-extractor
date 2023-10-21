@@ -92,7 +92,7 @@ const updatePricesFromExcel = ({
     return updatedData;
   } catch (error: any) {
     // Handle error scenarios
-    setExtractedData(null);
+    // setExtractedData(null);
     setErrorMessage(`Failed to update prices from Excel: ${error.message}`);
     setIsCustomModalOpen(true);
     setCustomModalType(CustomModalTypes.Error);
