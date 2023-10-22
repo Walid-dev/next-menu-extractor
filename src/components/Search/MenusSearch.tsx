@@ -6,7 +6,7 @@ import TaskActionButton from "../Buttons/TaskActionButton";
 
 const MenuSearch = ({ fetchMenus, fetching, headofficeId, setHeadofficeId }) => {
   return (
-    <Flex direction="column" alignItems="flex-start" gap="20px" minW="160px">
+    <Flex direction="column" my="1em" alignItems="flex-start" gap="20px" minW="160px">
       <TypewriterEffect text="Enter your Headoffice ID" speed={60} />
       <Input
         size="xs"

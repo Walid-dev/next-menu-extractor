@@ -9,7 +9,7 @@ const HeaderMain = ({ task, setTask }) => {
       {/* <Heading size="md">Chakra App</Heading> */}
       <Image boxSize="80px" src="https://www.mobi2go.com/admin/images/logos/mobi-logo-light-blue.svg" alt="Mobi logo" />
       <Spacer />
-      {/* <HeaderButtonLinks task={task} setTask={setTask} /> */}
+      <HeaderButtonLinks task={task} setTask={setTask} />
       <Spacer />
       <ButtonGroup gap="2" alignItems="center">
         <Button size="sm" colorScheme="teal">
