@@ -55,7 +55,7 @@ export interface Product {
   tags: string[];
   metadata: any[];
   sync_tag: null | string;
-  date_updated: string;
+  date_updated: null | string;
   modifier_groups: string[];
   modifiers: string[];
   size_modifier_credit_limit: any[]; // May need to refine this type based on actual data structure

@@ -1,6 +1,6 @@
 import { Menu, MenuData, Product, Category, ModifierGroup, Modifier, PropertyTier } from "@/types/MenuData";
 
-export const INITIAL_MENU_STATE: MenuData = {
+export const INITIAL_DATA_MENU_STATE: MenuData = {
   menus: [],
   categories: [],
   products: [],
@@ -32,7 +32,7 @@ export const INITIAL_CATEGORY_STATE: Category = {
   products: [],
 };
 
-export const INITIAL_PRODUCT_STATE = {
+export const INITIAL_PRODUCT_STATE: Product = {
   name: "",
   backend_name: "",
   description: "",
@@ -45,7 +45,7 @@ export const INITIAL_PRODUCT_STATE = {
   modifier_selection_limit: 0,
   free_modifier_credit: 0,
   modifier_credit_limit: null,
-  property_tiers: [{}, {}, {}, {}, {}],
+  property_tiers: [{ price: "" }, { price: "" }, { price: "" }, { price: "" }, { price: "" }],
   tags: [],
   metadata: [],
   sync_tag: null,
@@ -94,6 +94,102 @@ export const INITIAL_MODIFIER_STATE: Modifier = {
   size_prices: [],
   credit_limit_override: false,
 };
+
+export const INITIAL_MENU_STATE = {
+  menus: [
+    {
+      name: "",
+      backend_name: "",
+      description: "",
+      metadata: [],
+      tags: [],
+      sync_tag: null,
+      date_updated: null,
+      date_update_checked: null,
+      categories: [],
+    },
+  ],
+  categories: [
+    {
+      name: "",
+      backend_name: "",
+      description: "",
+      image_id: 0,
+      tags: [],
+      metadata: [],
+      sync_tag: null,
+      date_updated: null,
+      products: [],
+    },
+  ],
+  products: [
+    {
+      name: "",
+      backend_name: "",
+      description: "",
+      image_id: 0,
+      plu: "",
+      ignores_free_credit: false,
+      price: 0,
+      display_price: "",
+      allow_comment: false,
+      modifier_selection_limit: 0,
+      free_modifier_credit: 0,
+      modifier_credit_limit: null,
+      property_tiers: [[], [], [], [], []],
+      tags: [],
+      metadata: [],
+      sync_tag: null,
+      date_updated: null,
+      modifier_groups: [],
+      modifiers: [],
+      size_modifier_credit_limit: [],
+    },
+  ],
+  modifier_groups: [
+    {
+      name: "",
+      backend_name: "",
+      type: "",
+      free_modifier_credit: 0,
+      selection_requirement: 0,
+      selection_limit: 0,
+      product_modifier_selection_limit_override: false,
+      tags: [],
+      metadata: [],
+      sync_tag: null,
+      pricing_strategy: "",
+      date_updated: null,
+      modifiers: [],
+      products: [],
+    },
+  ],
+  modifiers: [
+    {
+      name: "",
+      backend_name: "",
+      description: "",
+      price: 0,
+      type: "",
+      plu: "",
+      plu_left: "",
+      plu_right: "",
+      plu_remove: "",
+      ignores_free_credit: false,
+      product_plu_override: false,
+      size_tiers: [],
+      property_tiers: [[], [], [], [], []],
+      tags: [],
+      image_id: 0,
+      metadata: [],
+      sync_tag: null,
+      date_updated: null,
+      size_prices: [],
+      credit_limit_override: false,
+    },
+  ],
+};
+  
 
 const MenuReducer = (state: any, action: any) => {
   switch (action.type) {
