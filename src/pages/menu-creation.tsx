@@ -4,7 +4,7 @@ import { Box, Text, VStack } from "@chakra-ui/react";
 
 const MenuCreation = () => {
   return (
-    <VStack border="1px solid aqua">
+    <VStack spacing={5} p={5} align="start" w="100%" border="1px solid aqua">
       <HeaderMain />
 
       <Box p={4} border="1px solid lime">
