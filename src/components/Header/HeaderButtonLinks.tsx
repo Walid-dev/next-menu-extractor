@@ -1,4 +1,4 @@
-import { Flex, ButtonGroup, Button, Spacer } from "@chakra-ui/react";
+import { Flex, ButtonGroup, Button, Spacer, Link as ChakraLink } from "@chakra-ui/react";
 import Link from "next/link";
 
 /**
@@ -19,28 +19,19 @@ const HeaderButtonLinks: React.FC<HeaderButtonLinksProps> = ({ task, setTask }) 
     <Flex alignItems="center" gap="2" ml="1rem">
       <Spacer />
       <ButtonGroup gap="2" alignItems="center">
-        <Button
-          size="sm"
-          colorScheme="blue"
-          onClick={() => setTask && setTask("update")} // Check setTask existence before calling
-        >
-          Extract Menu
-        </Button>
 
-        <Button
-          size="sm"
-          colorScheme="yellow"
-          onClick={() => setTask && setTask("extract")} // Check setTask existence before calling
-        >
-          Update Menu Price
-        </Button>
+        <Link href="/" passHref>
+          <ChakraLink as={Button} size="sm" colorScheme="teal">
+            Extract Menu
+          </ChakraLink>
+        </Link>
 
         {task && <Button size="sm">{task}</Button>}
 
         <Link href="/menu-creation" passHref>
-          <Button as="a" size="sm" colorScheme="teal">
+          <ChakraLink as={Button} size="sm" colorScheme="teal">
             Menu Creation
-          </Button>
+          </ChakraLink>
         </Link>
       </ButtonGroup>
     </Flex>

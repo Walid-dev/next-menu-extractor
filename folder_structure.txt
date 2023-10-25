@@ -22,17 +22,24 @@
 │   │   ├── Modals
 │   │   └── Search
 │   ├── contexts
+│   ├── hooks
+│   │   └── useFetchMenu.js
 │   ├── pages
 │   │   ├── _app.tsx
 │   │   ├── _document.tsx
-│   │   └── index.tsx
+│   │   ├── index.tsx
+│   │   └── menu-creation.tsx
 │   ├── style
 │   │   └── main.css
+│   ├── types
+│   │   ├── MenuData.ts
+│   │   └── types.ts
 │   └── utils
 │       ├── assignMenuColors.ts
 │       ├── downloadFileWithData.ts
 │       ├── excelUtils.ts
 │       ├── extractMenu.ts
+│       ├── fetchAndExtractMenus.ts
 │       ├── generateExcel.ts
 │       ├── getRandomColor.ts
 │       ├── handleCopy.ts
@@ -40,8 +47,6 @@
 │       ├── setMenuColors.ts
 │       └── updatePricesFromExcel.ts
 ├── tsconfig.json
-├── types
-│   └── types.ts
 └── yarn.lock
 
-17 directories, 28 files
+18 directories, 32 files
