@@ -198,6 +198,13 @@ const MenuReducer = (state: any, action: any) => {
         ...state,
         [action.payload.name]: action.payload.value,
       };
+
+      case "CHANGE_CATEGORY_INPUT":
+        return {
+          ...state,
+          [action.payload.name]: action.payload.value,
+        };
+      
     case "ADD_TAG":
       return {
         ...state,
@@ -208,11 +215,27 @@ const MenuReducer = (state: any, action: any) => {
         ...state,
         tags: state.tags.filter((tag: any) => tag != action.payload),
       };
-    case "INCREASE":
+      case "ADD_CATEGORY":
       return {
         ...state,
-        quantity: state.quantity + 1,
+        categories: [
+          ...state.categories,
+         INITIAL_CATEGORY_STATE
+        ]
       };
+
+      case "UPDATE_CATEGORY":
+        const updatedCategories = [...state.categories];
+        updatedCategories[action.payload.index] = {
+          ...updatedCategories[action.payload.index],
+          ...action.payload.data
+        };
+        return {
+          ...state,
+          categories: updatedCategories
+        };
+      
+
     case "DECREASE":
       return {
         ...state,
