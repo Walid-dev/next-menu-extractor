@@ -87,7 +87,7 @@ const updatePricesFromExcel = ({
     const successMessage = `Successfully updated prices for: ${countProductPricesUpdated} products, ${productTierCounter} product tiers, ${countModifierPricesUpdated} modifiers, ${modifierTierCounter} modifier tiers.`;
     setErrorMessage(successMessage);
     setIsCustomModalOpen(true);
-    setCustomModalType(CustomModalTypes.Info);
+    setCustomModalType(CustomModalTypes.Success);
 
     return updatedData;
   } catch (error: any) {

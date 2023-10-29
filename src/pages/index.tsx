@@ -132,7 +132,7 @@ export default function Home() {
         <VStack spacing={3} w="full" align="start">
           <Box minH="50px">
             <TypewriterEffect
-              text={`${selectedMenuName}: Adjust prefixes for duplication or hit Process for price update`}
+              text={`${selectedMenuName}: Adjust the prefix if needed and hit 'Process' ✅`}
               speed={50}
             />
           </Box>
@@ -160,7 +160,7 @@ export default function Home() {
           </HStack>
 
           <TaskActionButton onClick={handleSubmit} isLoading={submitting} mt="1em">
-            Process
+            PROCESS
           </TaskActionButton>
         </VStack>
       )}
@@ -168,7 +168,7 @@ export default function Home() {
         {extractedData && (
           <VStack spacing={4} w="full" alignItems="start">
             <Box minH="50px">
-              <TypewriterEffect text="Download/copy menu or upload Excel file to update prices" speed={60} />
+              <TypewriterEffect text="Download/copy your menu or utilize an Excel file for swift price changes 🚀" speed={60} />
             </Box>
             <Heading as="h6" size="sm" color="#4e99eb">
               {newMenuName}
@@ -177,7 +177,7 @@ export default function Home() {
               <ActionHoverButton
                 buttonText={copied ? "Copied!" : "Copy Menu"}
                 onButtonClick={() => handleCopy(extractedData, setCopied)}
-                colorScheme="mobiColor"
+                colorScheme="cyan"
                 color="black"
                 size="sm"
                 fontSize="xs"
@@ -189,7 +189,7 @@ export default function Home() {
               <ActionHoverButton
                 buttonText="Download Menu"
                 onButtonClick={() => downloadFileWithData(extractedData, `${prefix}${selectedMenu.backend_name}.json`)}
-                colorScheme="mobiColor"
+                colorScheme="cyan"
                 color="black"
                 size="sm"
                 fontSize="xs"
@@ -200,7 +200,7 @@ export default function Home() {
               <ActionHoverButton
                 buttonText="Download Excel"
                 onButtonClick={() => handleDownloadExcelPricesFile(extractedData)}
-                colorScheme="mobiColor"
+                colorScheme="cyan"
                 color="black"
                 size="sm"
                 fontSize="xs"
@@ -218,7 +218,7 @@ export default function Home() {
               />
               <label htmlFor="excel-upload">
                 <TaskActionButton as="span" cursor="pointer" rightIcon={<AttachmentIcon />}>
-                  Choose File to update prices
+                  CHOOSE FILE TO UPDATE PRICES
                 </TaskActionButton>
               </label>
             </InputGroup>
@@ -236,7 +236,7 @@ export default function Home() {
         {updatedData && (
           <VStack spacing={4} w="full" alignItems="start">
             <Box minH="30px">
-              <TypewriterEffect text="Amazing job 🙌 You can now download or copy your menu with prices updated" speed={70} />
+              <TypewriterEffect text="Success! 🙌 Your menu is ready with updated prices. Feel free to download or copy it." speed={70} />
             </Box>
             <Heading as="h6" size="sm" color="#3ff58b">
               {newMenuName}
@@ -246,7 +246,7 @@ export default function Home() {
               <ActionHoverButton
                 buttonText={copiedUpdatedMenu ? "Copied!" : "Copy Menu"}
                 onButtonClick={() => handleCopy(updatedData, setCopiedUpdatedMenu)}
-                colorScheme="mobiColor"
+                colorScheme="cyan"
                 color="black"
                 size="sm"
                 fontSize="xs"
@@ -258,7 +258,7 @@ export default function Home() {
               <ActionHoverButton
                 buttonText="Download Menu"
                 onButtonClick={() => downloadFileWithData(updatedData, `menu_updated.json`)}
-                colorScheme="mobiColor"
+                colorScheme="cyan"
                 color="black"
                 size="sm"
                 fontSize="xs"
@@ -268,7 +268,7 @@ export default function Home() {
               <ActionHoverButton
                 buttonText="Download Excel"
                 onButtonClick={() => handleDownloadExcelPricesFile(updatedData)}
-                colorScheme="mobiColor"
+                colorScheme="cyan"
                 color="black"
                 size="sm"
                 fontSize="xs"
@@ -284,7 +284,7 @@ export default function Home() {
               as="span"
               cursor="pointer"
               rightIcon={<AttachmentIcon />}>
-              Show Details
+              SHOW DETAILS
             </TaskActionButton>
 
             <Box minH="50px"></Box>

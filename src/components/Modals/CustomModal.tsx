@@ -9,6 +9,7 @@ import {
   ModalCloseButton,
   Button,
   Box,
+  Text
 } from "@chakra-ui/react";
 import { calcLength } from "framer-motion";
 
@@ -16,6 +17,7 @@ export enum CustomModalTypes {
   Error = "Error",
   Info = "Info",
   Warning = "Warning",
+  Success = "Success"
 }
 
 interface CustomModalProps {
@@ -60,6 +62,11 @@ const CustomModal: React.FC<CustomModalProps> = ({
       backgroundColor = "#DAA520";
       fontColor = "white";
       break;
+      case CustomModalTypes.Success:
+      modalTitle = "Success";
+      backgroundColor = "#4CAF50";
+      fontColor = "white";
+      break;
     default:
       backgroundColor = "gray";
       fontColor = "white";
@@ -79,12 +86,12 @@ const CustomModal: React.FC<CustomModalProps> = ({
         <ModalHeader>{modalTitle}</ModalHeader>
         <ModalCloseButton color="black" />
         <ModalBody>
-          <p>{modalMessage}</p>
+          <Text as='b' fontSize="1.1em" noOfLines={4}>{modalMessage}</Text>
         </ModalBody>
         <ModalFooter>
-          <Button colorScheme="white" mr={3} variant="outline" onClick={onSecondaryAction}>
+          {/* <Button colorScheme="white" mr={3} variant="outline" onClick={onSecondaryAction}>
             {secondaryButtonText}
-          </Button>
+          </Button> */}
           <Button colorScheme="teal" onClick={handleModalClose}>
             Close
           </Button>
