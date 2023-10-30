@@ -64,7 +64,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
       break;
       case CustomModalTypes.Success:
       modalTitle = "Success";
-      backgroundColor = "#4CAF50";
+      backgroundColor = "teal";
       fontColor = "white";
       break;
     default:
@@ -92,7 +92,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
           {/* <Button colorScheme="white" mr={3} variant="outline" onClick={onSecondaryAction}>
             {secondaryButtonText}
           </Button> */}
-          <Button colorScheme="teal" onClick={handleModalClose}>
+          <Button colorScheme="blue" onClick={handleModalClose}>
             Close
           </Button>
         </ModalFooter>
