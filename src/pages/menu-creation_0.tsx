@@ -1,13 +1,14 @@
 // @ts-nocheck
 
 import { useReducer, useState } from "react"; // useRef is removed since it's not used
-import MenuReducer, { INITIAL_MENU_STATE, INITIAL_SINGLE_MENU_STATE } from "@/reducer/MenuReducer";
+import MenuReducer, { INITIAL_SINGLE_MENU_STATE } from "@/reducer/MenuReducer";
 import HeaderMain from "@/components/Header/HeaderMain";
 import { Box, Text, VStack, Textarea, Button, Input } from "@chakra-ui/react";
 import "../style/main.css";
 
+
 const MenuCreation = () => {
-  const [state, dispatch] = useReducer(MenuReducer, INITIAL_MENU_STATE);
+  const [state, dispatch] = useReducer(MenuReducer, INITIAL_SINGLE_MENU_STATE);
   const [selectedCategoryIndex, setSelectedCategoryIndex] = useState(null);
 
   const handleChange = (e) => {
@@ -33,10 +34,6 @@ const MenuCreation = () => {
   const selectCategory = (index) => {
     setSelectedCategoryIndex(index);
   };
-
-
-  console.log(state);
-
 
   return (
     <VStack spacing={5} p={5} align="start" w="100%" border="1px solid aqua" color="white">
@@ -69,6 +66,13 @@ const MenuCreation = () => {
         />
         <Button onClick={addCategory} colorScheme="teal">+ Add Category</Button>
       </Box>
+      <Textarea
+        value={JSON.stringify(state, null, 2)}
+        readOnly
+        height="400px"
+        overflowY="scroll"
+        fontSize=".75em"
+      />
       <VStack p={4} border="1px solid lime">
         {state.categories.map((category, index) => (
           <Box key={index} mb={4} p={3} borderWidth="1px" borderRadius="lg" onClick={() => selectCategory(index)}>
@@ -98,13 +102,6 @@ const MenuCreation = () => {
           </Box>
         ))}
       </VStack>
-      <Textarea
-        value={JSON.stringify(state, null, 2)}
-        readOnly
-        height="400px"
-        overflowY="scroll"
-        fontSize=".75em"
-      />
     </VStack>
   );
 };

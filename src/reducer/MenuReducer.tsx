@@ -109,6 +109,7 @@ export const INITIAL_MENU_STATE = {
       categories: [],
     },
   ],
+
   categories: [
     {
       name: "",
@@ -221,15 +222,25 @@ const MenuReducer = (state: any, action: any) => {
         categories: [
           ...state.categories,
          INITIAL_CATEGORY_STATE
-        ]
+        ],
       };
 
       case "UPDATE_CATEGORY":
         const updatedCategories = [...state.categories];
+        console.log(action.payload.data);
+        console.log(state.menus[0].categories);
         updatedCategories[action.payload.index] = {
           ...updatedCategories[action.payload.index],
           ...action.payload.data
         };
+
+        const { index, data } = action.payload;
+
+        if (data.hasOwnProperty('backend_name')) {
+          console.log("Here", data.backend_name);
+        state.menus[0].categories.push(data.backend_name);
+        }
+
         return {
           ...state,
           categories: updatedCategories

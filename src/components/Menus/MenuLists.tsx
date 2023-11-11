@@ -33,10 +33,11 @@ const MenuList = ({ menuList, handleMenuClick, menuColors }) => {
             borderColor: "#02f9f9",
             borderWidth: "2px",
           }}
-          _active={{
-            borderColor: "#02f9f9",
-            borderWidth: "2px",
-          }}>
+          // _active={{
+          //   borderColor: "#02f9f9",
+          //   borderWidth: "2px",
+          // }}
+          >
           {menu.backend_name}
         </Button>
       ))}
