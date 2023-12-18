@@ -24,14 +24,7 @@ const ActionHoverButton: React.FC<Props> = ({
   onMouseLeave,
 }) => {
   return (
-    <Button
-      onClick={onButtonClick}
-      colorScheme={colorScheme}
-      color={color}
-      size={size}
-      fontSize={fontSize}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}>
+    <Button minW={"80px"} onClick={onButtonClick} colorScheme={colorScheme} color={color} size={size} fontSize={fontSize} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
       {isCopied ? "Copied!" : buttonText}
     </Button>
   );
